@@ -1,0 +1,914 @@
+/*Developed by Cristian Ceni 2025, all the rights are reserved*/
+
+/*Font: Poppins di Google*/
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+/*Temi*/
+:root, [data-theme="classic"] {
+    --col-toggle: #414141;
+    --col-toggleal: #666565;
+    --col-buttokgen: #2d2c2c; 
+    --col-buttkogen: #b03b2e; 
+    --col-background: #ffffff;
+    --col-secdiv: #eeeeee;
+    --col-border:#ccc; 
+    --shad-ril: 0 2px 10px rgba(0, 0, 0, 0.2);
+    --shad-semiril: 0px 0px 5px rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="mattoni"] {
+    --col-toggle: #8a4520;         
+    --col-toggleal: #b55e2c;       
+    --col-buttokgen: #9d4c25;      
+    --col-buttkogen: #5c2b0e;      
+    --col-background: #f8efe9;  
+    --col-secdiv: #e7c9b3;         
+    --col-border: #c4a484;
+    --shad-ril: 0 2px 10px rgba(138, 69, 32, 0.25);
+    --shad-semiril: 0 0 5px rgba(138, 69, 32, 0.15);
+}
+
+[data-theme="campagna"] {
+    --col-toggle: #607240;         
+    --col-toggleal: #8f9779;       
+    --col-buttokgen: #6d823f;      
+    --col-buttkogen: #3e4a28;      
+    --col-background: #f1f1dd;    
+    --col-secdiv: #dfe3c5;         
+    --col-border: #bdb76b;
+    --shad-ril: 0 2px 10px rgba(96, 114, 64, 0.25);
+    --shad-semiril: 0 0 5px rgba(96, 114, 64, 0.15);
+}
+
+[data-theme="crema-vino"] {
+    --col-toggle: #813338;         
+    --col-toggleal: #d4a373;       
+    --col-buttokgen: #91393e;      
+    --col-buttkogen: #4a1f1f;      
+    --col-background: #fff3eb;   
+    --col-secdiv: #f0dfd3;         
+    --col-border: #d7b89a;
+    --shad-ril: 0 2px 10px rgba(129, 51, 56, 0.25);
+    --shad-semiril: 0 0 5px rgba(129, 51, 56, 0.15);
+}
+
+[data-theme="terra"] {
+    --col-toggle: #6b4429;         
+    --col-toggleal: #a0522d;       
+    --col-buttokgen: #7b4d30;      
+    --col-buttkogen: #3b2f2f;      
+    --col-background: #efe6db; 
+    --col-secdiv: #decbb8;         
+    --col-border: #c1a78e;
+    --shad-ril: 0 2px 10px rgba(107, 68, 41, 0.25);
+    --shad-semiril: 0 0 5px rgba(107, 68, 41, 0.15);
+}
+
+/*Prop. div temi*/
+.theme-selector {
+    background: var(--col-secdiv);
+    box-shadow: var(--shad-semiril);
+
+    width: 85%;
+    max-width: 700px;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border-radius: 15px;
+    margin: auto;
+    border-radius: 12px;
+}
+
+.theme-options {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.theme-option {
+    width: 36px;
+    height: 36px;
+    border-radius: 45px;
+    cursor: pointer;
+    overflow: hidden;
+    transition: transform 0.2s;
+    border: 2px solid transparent;
+}
+
+.theme-option:hover {
+    transform: scale(1.1);
+}
+
+.theme-option.active {
+    border-color: #333;
+    transform: scale(1.1);
+}
+
+.color-stripes {
+    display: flex;
+    height: 100%;
+}
+
+.color-stripes span {
+    flex: 1;
+}
+
+/* Animazioni per gli elementi */
+.menu-section,
+.sec-div,
+.container,
+.social-box,
+.footer {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+/* Classe che verrà aggiunta quando l'elemento è visibile*/
+.animate-in {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/*Inizio elementi UI*/
+input,
+select,
+textarea,
+button {
+    font-size: 16px;
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--col-background);
+    border: 1px solid var(--col-border);
+    
+    margin: auto;
+    padding: 10px;
+    margin: 10px;
+
+    text-align: center;
+
+    border-radius: 25px;
+    cursor: pointer;
+}
+
+.animate__animated {
+    --animate-duration: 0.3s;
+}
+
+body {
+    background-color: var(--col-background);
+    font-family: 'Poppins', sans-serif;
+    
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+
+    /*Animazione comparsa sito*/
+    animation: fadeIn 1s forwards;
+    overflow-x: hidden;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.container {
+    background: var(--col-background);
+
+    text-align: center;
+
+    width: 90%;
+    max-width: 600px;
+    padding: 20px;
+    border-radius: 15px;
+    margin-top: 25px;
+    margin-bottom: 25px;
+}
+
+/*Sezione di ogni pezzo di menù*/
+.sec-div {
+    background: var(--col-secdiv);
+    box-shadow: var(--shad-semiril);
+
+    text-align: center;
+
+    width: 85%;
+    max-width: 700px;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 15px;
+    padding-bottom: 25px;
+    border-radius: 15px;
+    margin: auto;
+}
+
+/*Icona carrello sovraimpressione*/
+.cart-icon {
+    background-color: var(--col-toggle);
+    box-shadow:var(--shad-ril);
+    color: var(--col-background);
+
+    position: fixed;
+    top: 30px;
+    right: 30px;
+    z-index: 1000;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-weight: 600;
+    
+    animation: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+    transition: none !important;
+}
+
+/*Social box sotto logo*/
+a {
+    text-decoration: none;
+}
+
+.social-box {
+    width: 90%;
+    margin: auto;
+}
+
+.social-box p{
+    font-size: 14px;
+}
+
+.social-box img {
+    width: 25px;
+    margin-bottom: -15px;
+}
+
+/*Dimensioni e altre iniz.*/
+.testo-pr {
+    margin:auto;
+    margin-top: -15px;
+    margin-bottom: 5px;
+}
+
+select, input {
+    margin: auto;
+    width: 90%;
+}
+
+/*Animazione pulsante generale*/
+button::after{
+    animation: bounce;
+    animation-duration: 2s;
+}
+
+/*-------PULSANTI-------*/
+
+/*Pulsante invio WhatsApp*/
+.button-send {
+    background-color: var(--col-buttokgen);
+    color: var(--col-background);
+
+    height: 40px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+
+    margin: auto;
+}
+
+/*Pulsante rimuovi ordine*/
+.button-remove {
+    background-color: var(--col-buttkogen);
+    color: var(--col-background);
+
+    height: 35px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+
+    margin: auto;
+    margin: 5px;
+}
+
+/*Pulsante aggiungi ordine nel sec pers*/
+.button-add {
+    background-color: var(--col-buttokgen);
+    color: var(--col-background);
+
+    height: 40px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    width: 200px;
+
+    margin: auto;
+    margin: 5px;
+}
+
+/*Pulsante annulla nel sec pers*/
+.button-esc {
+    background-color: var(--col-buttkogen);
+    color: var(--col-background);
+
+    height: 40px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    width: 200px;
+
+    margin: auto;
+    margin: 5px;
+}
+
+/*Pulsante reset comanda*/
+.button-reset {
+    background-color: var(--col-buttkogen);
+    color: var(--col-background);
+
+    height: 40px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+
+    margin: auto;
+}
+
+/*Pulsante logout staff*/
+.button-logout {
+    background-color: var(--col-buttkogen);
+    color: var(--col-background);
+
+    height: 30px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+
+    margin: auto;
+    margin-top: 10px;
+    margin-bottom: 15px;
+
+    font-size: 12px;
+}
+
+/*Pulsante scelta index*/
+.button-chose {
+    background-color: var(--col-buttokgen);
+    color: var(--col-background);
+
+    height: 40px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    width: 250px;
+
+    margin: auto;
+}
+
+/*Pulsanti auth*/
+.buttons-auth button {
+    width: 200px;
+    height: 40px;
+    font-size: 14px;
+}
+
+/*Img pulsante generica*/
+.butt-img {
+    width: 20px;
+    height: 20px;
+    margin-bottom: -5px;
+}
+
+/*Sezione menù*/
+.menu-section {                                          
+    text-align: center;
+
+    width: 90%;
+    margin: auto;
+    padding: 5px;
+}                
+
+.menu-toggle {
+    background-color: var(--col-toggle);
+    box-shadow: var(--shad-semiril);
+    border-radius: 25px;
+
+    font-weight: 600;
+    text-align: left;
+    color: var(--col-background);
+
+    width: 100%;
+    padding: 15px;
+    margin: 0;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    padding-right: 40px; /* Spazio per la freccia */
+}
+
+.menu-toggle::after {
+    content: "▼";
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    transition: transform 0.3s ease;
+    animation: none !important;
+}
+
+.menu-toggle.active-toggle {
+    background-color: var(--col-buttokgen);
+    color: var(--col-background);
+}
+
+.menu-toggle.active-toggle::after {
+    transform: translateY(-50%) rotate(180deg);
+}
+
+/*Categoria menù chiusa*/
+.menu-category {
+    margin-top: 5px;
+    border-radius: 15px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    display: none;
+}
+
+/*Categoria menù aperta*/
+.menu-category.show {
+    align-items: center;
+    gap: 5px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: auto;
+    display: flex;
+
+    /*Animazione comparsa sezione*/
+    animation: fadeIn;
+    animation-duration: .75s;
+}
+
+/*Elemento menù*/
+.menu-item {
+    background-color: var(--col-border);
+    box-shadow: var(--shad-semiril);
+    background-size: cover;
+    background-position: center;
+    border-radius: 15px;
+    mix-blend-mode: multiply;
+    
+    width: 220px;
+    height: 280px;
+    scale: 0.95;
+
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+/*Elemento menù staff*/
+.menu-item-staff {
+    background-color: var(--col-border);
+    box-shadow: var(--shad-semiril);
+    background-size: cover;
+    background-position: center;
+    border-radius: 15px;
+    mix-blend-mode: multiply;
+
+    width: 120px;
+    height: 180px;
+    scale: 0.85;
+
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+/*Info el. menù e testo*/
+.menu-item .info {
+    background: var(--col-background);
+    box-shadow: var(--shad-ril);
+    border-radius: 20px;
+
+    text-align: center;
+
+    position: absolute;
+    transform: translateX(-50%);
+    bottom: 10px;
+    left: 50%;
+    width: 75%;
+    padding: 15px;
+    min-height: 45px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/*Info el. menù staff e testo*/
+.menu-item-staff .info {
+    background: var(--col-background);
+    box-shadow: var(--shad-ril);
+    border-radius: 15px;
+
+    text-align: center;
+
+    position: absolute;
+    transform: translateX(-50%);
+    bottom: 7.5px;
+    left: 50%;
+    width: 65%;
+    padding: 15px;
+    min-height: 45px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.menu-item .info p {
+    font-size: 14px;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.menu-item-staff .info p {
+    font-size: 11px;
+    margin: auto;
+    line-height: 1.2;
+}
+
+/*Opzioni senza glutine script*/
+.gluten-option {
+    background-color: var(--col-secdiv);
+    box-shadow: var(--shad-semiril);
+    border: 1px solid var(--col-border);
+
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 3.5px;
+    padding-bottom: 3.5px;
+    border-radius: 15px;
+    margin: auto;
+    margin-top: 5px;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    cursor: pointer;
+    transition: all 0.3s ease;
+    user-select: none; /* Evita la selezione del testo */
+}
+
+.gluten-option.selected {
+    background-color: var(--col-buttokgen);
+    color: var(--col-background);
+}
+
+.gluten-option input[type="checkbox"] {
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+.gluten-free-checkbox {
+    background-color: var(--col-background);
+    border: .5px solid var(--col-border);
+    border-radius: 15px;
+    -webkit-appearance: none;
+    appearance: none;
+
+    aspect-ratio: 1 / 1;
+    margin: auto;
+    padding: 0;
+    width: 18px;
+    height: 18px;
+    position: relative;
+}
+
+.gluten-free-checkbox:checked {
+    background-color: var(--col-buttokgen);
+    background-image: url('img/icone e loghi/checked.png');
+    background-position: center;
+    background-size: 85%;
+    
+    animation: fadeIn;
+    animation-duration: .5s;
+}
+
+.gluten-im {
+    width: 22.5px;
+    height: 22.5px;
+    margin: auto;
+}
+
+/*Categoria allergeni*/
+.allergen-section .menu-toggle {
+    background-color: var(--col-toggleal);
+    color: var(--col-background);
+}
+
+.allergen-legend {
+    background: var(--col-background);
+    box-shadow: var(--shad-semiril);
+    border-radius: 10px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    padding: 12px;
+    margin: 8px 0;
+    width: 90%;
+}
+
+.allergen-container {
+    display: inline-flex;
+    gap: 5px;
+    align-items: center;
+}
+
+.allergen-dot {
+    box-shadow: var(--shad-semiril);
+    border-radius: 50%;
+
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+}
+
+/* Colori per gli allergeni*/
+.glutine { background-color: #e30614; }     
+.latte { background-color: #0072ce; }      
+.uova { background-color: #ffb400; }         
+.piccante { background-color: #d10000; }    
+.pesce { background-color: #005f73; }       
+.soia { background-color: #8b1e3f; }      
+.arachidi { background-color: #a0522d; }    
+.anidride { background-color: #f9a825; }     
+.lupini { background-color: #a26ec4; }       
+.molluschi { background-color: #b22222; }     
+.crostacei { background-color: #2e86ab; }    
+.sedano { background-color: #3cb043; }  
+.semisesamo { background-color: #d2b48c; }  
+.senape { background-color: #ffc107; }
+.fruttaguscio { background-color: #5a3825; }
+
+/*Riepilogo ordine*/
+#order-list {
+    text-align: left;
+    list-style: decimal;
+
+    padding-left: 15px;
+    padding-right: 15px;
+    margin: auto;
+}
+
+#order-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.order-box {
+    margin: auto;
+    width: 100%;
+}
+
+#order-list li.order-item {
+    box-shadow: var(--shad-semiril);
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+#order-list li.order-item:last-child {
+    margin-bottom: 0;
+}
+
+.order-product-name {
+    flex: 1;
+    word-break: break-word;
+}
+
+#order-list li.even {
+    background-color: var(--col-secdiv);
+}
+
+#order-list li.odd {
+    background-color: var(--col-background);
+}
+
+/*Note ordine*/
+.text-note {
+    margin: auto;
+    width: 100%;
+}
+
+textarea {
+    border: 1px solid var(--col-border);
+    font-family: 'Poppins', sans-serif;
+    
+    width: 85%;
+    height: 80px;
+    padding: 12px;
+    border-radius: 10px;
+    resize: none;
+}
+
+/*Privacy utente*/
+.privacy p {
+    padding-top: 20px;
+    font-size: 12px;
+}
+
+.copy-div p{
+    margin: 0;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.footern {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 2.5px;
+    padding: 10px;
+    border-radius: 10px;
+    margin: auto;
+    font-size: 12px;
+}
+
+.footern img {
+    width: 25px;
+    height: 25px;
+    margin-top: 7.5px;
+}
+
+/*Sezione personalizzazione*/
+.modal {
+    background: rgba(0,0,0,0.5);
+    box-shadow: var(--shad-ril);
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+
+    animation: fadeIn;
+    animation-duration: .25s;
+}
+
+.modal input, .modal select {
+    margin: auto;
+    max-width: 250px;
+}
+
+.sec-div-mini {
+    background: var(--col-secdiv);
+    box-shadow: var(--shad-semiril);
+    border-radius: 15px;
+
+    text-align: center;
+
+    width: 85%;
+    max-width: 700px;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 5px;
+    padding-bottom: 20px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    gap: -2.5px;
+}
+
+select {
+    background-color: var(--col-background);
+    border: 1px solid var(--col-border);
+    color: #333;
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    -webkit-appearance: none;
+    appearance: none;
+
+    background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="10" viewBox="0 0 14 10"><path fill="black" d="M7 10L0 0h14z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 12px 8px;
+
+    transition: all 0.3s ease;
+}
+
+select:focus {
+    border-color: var(--col-buttokgen);
+    background-color: var(--col-background);
+    box-shadow: var(--shad-ril);
+}
+
+.modal-content {
+    background: var(--col-background);
+    padding: 20px;
+    border-radius: 20px;
+    width: 80%;
+    max-width: 350px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.25);
+    text-align: center;
+    margin: auto;
+
+    animation: zoomIn;
+    animation-duration: .25s;
+}
+
+.pizza-inp{
+    background-color: var(--col-secdiv);
+    box-shadow: var(--shad-semiril);
+    border: 1px solid var(--col-border);
+    
+    padding-left: 15px;
+    padding-right: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-radius: 15px;
+    margin: auto;
+    width: 125px;
+    text-align: center;
+
+    cursor: pointer;
+    transition: all 0.3s ease;
+    user-select: none; /* Evita la selezione del testo */
+}
+
+.sec-butt-pers {
+    margin-top: 0px;
+    flex-direction: row;
+    display: flex;
+    flex-wrap: column;
+    justify-content: center;
+}
+
+/*Cont pulsanti sel in index*/
+.buttons-sel{
+    margin: auto;
+    margin-top: 35px;
+    max-width: 300px;
+
+    flex-direction: column;
+    display: flex;
+    flex-wrap: column;
+    justify-content: center;
+
+    gap: 10px;
+}
+
+/*Cont pulsanti nuovi in menù staff*/
+.buttons-novi {
+    margin: auto;
+
+    flex-direction: column;
+    display: flex;
+    flex-wrap: column;
+    justify-content: center;
+
+    gap: 10px;
+}
+
+/*Cont pulsanti nuovi in auth*/
+.buttons-auth {
+    margin: auto;
+    margin-top: 15px;
+
+    flex-direction: column;
+    display: flex;
+    flex-wrap: column;
+    justify-content: center;
+
+    gap: 10px;
+}
+
+.inputs-auth {
+    margin: auto;
+    margin-top: 10px;
+
+    flex-direction: column;
+    display: flex;
+    flex-wrap: column;
+    justify-content: center;
+
+    gap: 15px;
+}

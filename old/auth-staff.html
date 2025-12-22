@@ -1,0 +1,44 @@
+<!-- Developed by Cristian Ceni 2025, all the rights are reserved -->
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="color-scheme" content="light">
+    <title>Gustò - Autenticazione</title>
+    <link rel="shortcut icon" type="image/png" href="img/icone e loghi/favicon.png" />
+    <link rel="stylesheet" href="style-uni.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <script defer src="/scripts/script.js"></script>
+    <script defer src="/scripts/auth.js"></script>
+    <script src="/scripts/menu.js"></script>
+</head>
+
+<body>
+    <div class="container" style="max-width: 350px; margin: auto;">
+        <img src="img/icone e loghi/auth.png" alt="Auth" style="width: 75px;">
+        <h1 style="line-height: 0.5;">Autenticazione</h1>
+        <p>Solo i membri dello staff <b>Gustò</b> possono accedere a questa sezione</p>
+
+        <div class="sec-div">
+            <div class="inputs-auth">
+                <input type="text" name="username" id="username-utente" placeholder="Nome utente">
+                <input type="password" name="password" id="pass-utente" placeholder="Password">
+            </div>
+
+            <div class="buttons-auth">
+                <button id="accedi" class="button-send" type="submit">
+                    Accedi
+                </button>
+
+                <button id="cred-dim" class="button-reset">
+                    Aiuto
+                </button>
+            </div>
+        </div>
+
+    </div>
+</body>
+
+</html>

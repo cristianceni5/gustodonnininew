@@ -1,0 +1,186 @@
+<!-- Developed by Cristian Ceni 2025, all the rights are reserved -->
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="color-scheme" content="light">
+    <title>Gustò - Menù Digitale Staff</title>
+    <link rel="shortcut icon" type="image/png" href="img/icone e loghi/favicon.png" />
+    <link rel="stylesheet" href="style-uni.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <script defer src="/scripts/script.js"></script>
+    <script defer src="/scripts/auth.js"></script>
+    <script src="/scripts/menu.js"></script>
+</head>
+
+<body>
+    <div id="cart" class="cart-icon">0</div>
+
+    <div class="container" id="up-page" data-animate>
+        <a href="menu-staff.html" class="logo-refresh">
+            <img src="img/logogusto_web_nbg.png" alt="Logo Gustò" class="logo"
+                style="width: 250px; margin-top: 35px; margin-bottom: 15px;">
+        </a>
+
+        <br>
+
+        <h1 style="margin: auto;">Menù staff</h1>
+        <p style="margin: auto;" id="messaggio-benvenuto">Versione dedicata.</p>
+        <button id="logout" class="button-logout">Logout</button>
+
+        <br>
+
+        <div class="sec-div" data-animate>
+            <div class="sec-sott">
+                <h2>Tavolo</h2>
+                <p class="testo-pr">Indica il numero del tavolo.</p>
+                <input type="number" id="table-number" placeholder="Numero tavolo" min="1">
+            </div>
+
+            <div class="sec-sott">
+                <h2>Cognome</h2>
+                <p class="testo-pr">Inserisci un cognome.</p>
+                <input type="name" id="cognome-cliente" placeholder="Cognome cliente">
+            </div>
+
+            <div class="sec-sott">
+                <h2>Coperto</h2>
+                <p class="testo-pr">Indica il numero dei coperti.</p>
+                <input type="number" id="coperto" placeholder="Numero persone" min="1">
+            </div>
+        </div>
+
+        <br>
+
+        <div class="sec-div" data-animate>
+            <br>
+            <div id="menu-container"></div> <!-- Menù da modificare nello script -->
+        </div>
+
+        <br>
+
+        <div class="sec-div" id="riepilogo-ordine" data-animate>
+            <h2>Riepilogo ordine:</h2>
+            <div class="order-box">
+                <ul id="order-list"></ul>
+            </div>
+            <p><b>Totale: €<span id="total-price">0.00</span></b></p>
+
+            <h3>Note per l'ordine</h3>
+            <p>Se hai richieste speciali o modifiche ai prodotti, scrivile qui:</p>
+            <div class="text-note">
+                <textarea id="order-notes" placeholder="Es. Senza cipolla, cottura media, con zucchero..."></textarea>
+            </div>
+
+            <br>
+
+            <div class="buttons-novi">
+                <button id="send-order" class="button-send">
+                    <img src="img/icone e loghi/send.png" alt="Invia" class="butt-img">
+                    Invia l'ordine su WhatsApp
+                </button>
+
+                <button id="reset-order" class="button-reset">
+                    <img src="img/icone e loghi/reset.png" alt="Reset" class="butt-img">
+                    Reset comanda
+                </button>
+            </div>
+
+            <br>
+
+            <div class="copy-div">
+                <p>© 2025 Gustò Bistrò</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="footern">
+        <p>Developed by: Cristian Ceni</p>
+        <a href="https://www.instagram.com/cenicristian/">
+            <img src="img/icone e loghi/CS_black_all.png" alt="Logo Cristian Ceni">
+        </a>
+    </div>
+
+    <div id="custom-pizza-modal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <h2>Personalizzazione</h3>
+
+                <div class="sec-div-mini">
+                    <p style="margin-bottom:7.5px;">Base:</p>
+                    <select id="base-pizza">
+                        <option value="covaccino">Covaccino - 5€</option>
+                        <option value="bianca">Bianca - 6€</option>
+                        <option value="rossa">Rossa - 6€</option>
+                        <option value="margherita">Margherita - 6€</option>
+                        <option value="calzone">Calzone - 8.50€</option>
+                    </select>
+                    <div class="gluten-option"
+                        style="margin-top: 15px; margin-bottom: -5px; padding-left: 10px; padding-right: 10px; padding-top: 0px; padding-bottom: 0px; width: 125px;">
+                        <input type="checkbox" class="gluten-free-checkbox" readonly="" tabindex="-1"
+                            id="gluten-freeid">
+                        <p style="font-size: 12px">Senza glutine <b>1€</b></p>
+                    </div>
+                    <p style="margin-bottom:7.5px;">Ingredienti extra <b>1€</b> l'uno:</p>
+                    <input type="text" id="extra-ingredienti" placeholder="Es. prosciutto, funghi...">
+                    <p style="margin-bottom:7.5px;">Quantità:</p>
+                    <input type="number" id="pizza-quantity" value="1" min="1" class="pizza-inp">
+                </div>
+                <br>
+                <div class="sec-butt-pers">
+                    <button class="button-esc" id="esc-pers">
+                        Annulla
+                    </button>
+
+                    <button class="button-add" id="add-pers">
+                        <img src="img/icone e loghi/shop.png" alt="Aggiungi" class="butt-img">
+                        Aggiungi
+                    </button>
+                </div>
+        </div>
+    </div>
+
+    <div id="custom-bevanda-modal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <h2 id="bevanda-titolo" style="margin-bottom: 10px;">Personalizzazione</h2>
+
+            <div id="bevanda-opzioni" class="sec-div-mini"></div>
+
+            <div class="sec-butt-pers" style="margin-top: 15px;">
+                <button class="button-esc" id="esc-bevanda">Annulla</button>
+                <button class="button-add" id="add-bevanda">
+                    <img src="img/icone e loghi/shop.png" alt="Aggiungi" class="butt-img">
+                    Aggiungi
+                </button>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const utente = localStorage.getItem('utenteLoggato');
+
+            // controllo robusto: null, "null", stringa vuota, solo spazi
+            if (!utente || String(utente).trim() === '' || String(utente).toLowerCase() === 'null') {
+                window.location.href = 'auth-staff.html';
+                return;
+            }
+
+            const uname = String(utente).trim();
+            const nomeFormattato = uname.charAt(0).toUpperCase() + uname.slice(1).toLowerCase();
+
+            const msgEl = document.getElementById('messaggio-benvenuto');
+            if (msgEl) msgEl.textContent = `Ciao ${nomeFormattato}, buon lavoro :)`;
+
+            const logoutBtn = document.getElementById('logout');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    localStorage.removeItem('utenteLoggato');
+                    window.location.href = 'auth-staff.html';
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>

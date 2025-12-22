@@ -1,0 +1,219 @@
+<!-- Developed by Cristian Ceni 2025, all the rights are reserved -->
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="color-scheme" content="light">
+    <title>Gustò - Menù Digitale</title>
+    <link rel="shortcut icon" type="image/png" href="img/icone e loghi/favicon.png" />
+    <link rel="stylesheet" href="style-uni.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <script defer src="/scripts/script.js"></script>
+    <script src="/scripts/menu.js"></script>
+</head>
+
+<body>
+    <div id="cart" class="cart-icon">0</div>
+
+    <div class="container" data-animate>
+        <a href="index.html" class="logo-refresh">
+            <img src="img/LogoGusto_web_nbg.png" alt="Logo Gustò" class="logo"
+                style="width: 250px; margin-top: 35px; margin-bottom: 15px;">
+        </a>
+
+
+        <div class="social-box" data-animate>
+            <a href="https://www.instagram.com/gustodonnini/">
+                <img src="img/icone e loghi/insta.png" alt="Instagram" class="social-img">
+            </a>
+            <a href="https://www.threads.net/@gustodonnini?xmt=AQGz9GO09kmpFFwQC3Gv2jEXv79JLWvkFMWOiWxUFduG4Go">
+                <img src="img/icone e loghi/threads.png" alt="Threads" class="social-img">
+            </a>
+            <a href="https://www.facebook.com/baralimentari.gusto/?locale=it_IT">
+                <img src="img/icone e loghi/faceb.png" alt="Facebook" class="social-img">
+            </a>
+            <a href="https://www.tiktok.com/@gustodonnini?_t=ZN-8vaaMHpMr1a&_r=1">
+                <img src="img/icone e loghi/tiktokn.png" alt="TikTok" class="social-img">
+            </a>
+            <a href="https://maps.app.goo.gl/3QWHf8vExNo6zLfA9">
+                <img src="img/icone e loghi/maps.png" alt="Maps" class="social-img">
+            </a>
+            <a href="https://www.tripadvisor.it/Restaurant_Review-g644275-d5937649-Reviews-Gusto-Donnini_Tuscany.html">
+                <img src="img/icone e loghi/tripadvisor.png" alt="Trip" class="social-img">
+            </a>
+            <p>Seguici sui social e lasciaci una recensione</p>
+        </div>
+
+        <br>
+
+        <div class="theme-options" data-animate>
+            <div class="theme-option" data-theme="classic" title="Classico">
+                <div class="color-stripes">
+                    <span style="background:#2d2c2c"></span>
+                    <span style="background:#b03b2e"></span>
+                    <span style="background:#eeeeee"></span>
+                </div>
+            </div>
+
+            <div class="theme-option" data-theme="mattoni" title="Fangoso">
+                <div class="color-stripes">
+                    <span style="background:#9d4c25"></span>
+                    <span style="background: #5c2b0e"></span>
+                    <span style="background:#f8efe9"></span>
+                </div>
+            </div>
+
+            <div class="theme-option" data-theme="campagna" title="Vino">
+                <div class="color-stripes">
+                    <span style="background:#6d823f"></span>
+                    <span style="background:#3e4a28"></span>
+                    <span style="background:#f1f1dd"></span>
+                </div>
+            </div>
+
+            <div class="theme-option" data-theme="crema-vino" title="Autunno">
+                <div class="color-stripes">
+                    <span style="background:#91393e"></span> <!-- buttokgen -->
+                    <span style="background:#4a1f1f"></span> <!-- buttkogen -->
+                    <span style="background:#fff3eb"></span> <!-- toggle -->
+                </div>
+            </div>
+
+            <div class="theme-option" data-theme="terra" title="Autunno">
+                <div class="color-stripes">
+                    <span style="background:#7b4d30"></span> <!-- buttokgen -->
+                    <span style="background:#3b2f2f"></span> <!-- buttkogen -->
+                    <span style="background:#efe6db"></span> <!-- toggle -->
+                </div>
+            </div>
+        </div>
+
+        <br>
+
+        <div class="sec-div" data-animate>
+            <div class="sec-sott">
+                <h2>Tavolo</h2>
+                <p class="testo-pr">Indica il numero del tavolo in cui sei seduto.</p>
+                <input type="number" id="table-number" placeholder="Numero tavolo" min="1">
+            </div>
+
+            <div class="sec-sott">
+                <h2>Cognome</h2>
+                <p class="testo-pr">Inserisci un cognome.</p>
+                <input type="name" id="cognome-cliente" placeholder="Cognome cliente">
+            </div>
+
+            <div class="sec-sott">
+                <h2>Coperto</h2>
+                <p class="testo-pr">L'ordine deve essere inviato da <b>una</b> sola persona per tavolo.</p>
+                <input type="number" id="coperto" placeholder="Numero persone" min="1">
+            </div>
+        </div>
+
+        <br>
+
+        <div class="sec-div" data-animate>
+            <h2>Menù</h2>
+            <p>Tocca una categoria per scoprire i piatti disponibili.</p>
+            <div id="menu-container"></div> <!-- Menù da modificare nello script -->
+        </div>
+
+        <br>
+
+        <div class="sec-div" id="riepilogo-ordine" data-animate>
+            <h2>Riepilogo ordine:</h2>
+            <div class="order-box">
+                <ul id="order-list"></ul>
+            </div>
+            <p><b>Totale: €<span id="total-price">0.00</span></b></p>
+
+            <h3>Note per l'ordine</h3>
+            <p>Se hai richieste speciali o modifiche ai prodotti, scrivile qui:</p>
+            <div class="text-note">
+                <textarea id="order-notes" placeholder="Es. Senza cipolla, cottura media, con zucchero..."></textarea>
+            </div>
+
+            <button id="send-order" class="button-send">
+                <img src="img/icone e loghi/send.png" alt="Invia" class="butt-img">
+                Invia l'ordine su WhatsApp
+            </button>
+
+            <br>
+
+            <div class="privacy">
+                <p>I dati da te inseriti hanno il <b>solo</b> scopo di fornire a Gustò le informazioni relative
+                    all'ordine, non verranno usate per altri scopi.</p>
+            </div>
+
+            <div class="copy-div">
+                <p>© 2025 Gustò Bistrò</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="footern">
+        <p>Developed by: Cristian Ceni</p>
+        <a href="https://www.instagram.com/cenicristian/">
+            <img src="img/icone e loghi/CS_black_all.png" alt="Logo Cristian Ceni">
+        </a>
+    </div>
+
+    <div id="custom-pizza-modal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <h2>Personalizzazione</h3>
+
+                <div class="sec-div-mini">
+                    <p style="margin-bottom:7.5px;">Base:</p>
+                    <select id="base-pizza">
+                        <option value="covaccino">Covaccino - 5€</option>
+                        <option value="bianca">Bianca - 6€</option>
+                        <option value="rossa">Rossa - 6€</option>
+                        <option value="margherita">Margherita - 6€</option>
+                        <option value="calzone">Calzone - 8.50€</option>
+                    </select>
+                    <div class="gluten-option"
+                        style="margin-top: 15px; margin-bottom: -5px; padding-left: 10px; padding-right: 10px; padding-top: 0px; padding-bottom: 0px; width: 125px;">
+                        <input type="checkbox" class="gluten-free-checkbox" readonly="" tabindex="-1"
+                            id="gluten-freeid">
+                        <p style="font-size: 12px">Senza glutine <b>1€</b></p>
+                    </div>
+                    <p style="margin-bottom:7.5px;">Ingredienti extra <b>1€</b> l'uno:</p>
+                    <input type="text" id="extra-ingredienti" placeholder="Es. prosciutto, funghi...">
+                    <p style="margin-bottom:7.5px;">Quantità:</p>
+                    <input type="number" id="pizza-quantity" value="1" min="1" class="pizza-inp">
+                </div>
+                <br>
+                <div class="sec-butt-pers">
+                    <button class="button-esc" id="esc-pers">
+                        Annulla
+                    </button>
+
+                    <button class="button-add" id="add-pers">
+                        <img src="img/icone e loghi/shop.png" alt="Aggiungi" class="butt-img">
+                        Aggiungi
+                    </button>
+                </div>
+        </div>
+    </div>
+
+    <div id="custom-bevanda-modal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <h2 id="bevanda-titolo" style="margin-bottom: 10px;">Personalizzazione</h2>
+
+            <div id="bevanda-opzioni" class="sec-div-mini"></div>
+
+            <div class="sec-butt-pers" style="margin-top: 15px;">
+                <button class="button-esc" id="esc-bevanda">Annulla</button>
+                <button class="button-add" id="add-bevanda">
+                    <img src="img/icone e loghi/shop.png" alt="Aggiungi" class="butt-img">
+                    Aggiungi
+                </button>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

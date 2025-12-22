@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gusto Donnini - Menu Staff</title>
+  <meta name="description" content="Menu personale con ordine rapido via WhatsApp.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="staff-theme">
+  <div class="backdrop"></div>
+
+  <header class="staff-header">
+    <div class="hero__logo">
+      <img src="img/logoGustonew.png" alt="Gusto Donnini logo">
+    </div>
+    <div>
+      <h1 class="staff-header__title">Area personale</h1>
+      <p class="staff-header__lead">Ordini interni rapidi.</p>
+    </div>
+  </header>
+
+  <section class="staff-info">
+    <div class="order__card">
+      <h2>Dati tavolo</h2>
+      <label class="field">
+        <span>Tavolo</span>
+        <input type="text" data-field="staff-table" placeholder="Es. Tavolo 4">
+      </label>
+      <label class="field">
+        <span>Coperti</span>
+        <input type="number" min="1" data-field="staff-covers" placeholder="Es. 3">
+      </label>
+      <label class="field">
+        <span>Cognome cliente</span>
+        <input type="text" data-field="staff-surname" placeholder="Es. Rossi">
+      </label>
+    </div>
+  </section>
+
+  <section class="filters" aria-label="Filtri menu">
+    <div class="filters__label">Categorie</div>
+    <div class="filters__chips" data-filters></div>
+    <div class="filters__search">
+      <input type="search" placeholder="Cerca un piatto" aria-label="Cerca un piatto" data-search>
+      <button type="button" data-search-clear>Reset</button>
+    </div>
+  </section>
+
+  <main class="menu" data-menu id="menu"></main>
+  <p class="menu__empty" data-menu-empty>Nessun risultato. Prova un altro termine o rimuovi i filtri.</p>
+
+  <section class="order" id="ordine">
+    <div class="order__summary">
+      <h2>Riepilogo ordine</h2>
+      <p class="order__empty" data-order-empty>Nessun articolo aggiunto.</p>
+      <ul class="order__list" data-order-list></ul>
+      <div class="order__total">
+        <span>Totale</span>
+        <strong data-order-total>EUR 0,00</strong>
+      </div>
+    </div>
+    <div class="order__cards">
+      <article class="order__card order__card--staff">
+        <div class="order__badge">Area personale</div>
+        <h3>Ordine interno</h3>
+        <p>Invia l ordine alla cucina.</p>
+        <label class="field">
+          <span>Note cucina</span>
+          <textarea rows="3" data-field="staff-note" placeholder="Es. cottura media"></textarea>
+        </label>
+        <button class="order__cta order__cta--dark" type="button" data-whatsapp="staff" data-phone="390000000000">
+          Invia ordine staff
+        </button>
+        <button class="order__reset" type="button" data-reset-order>Reset comanda</button>
+      </article>
+    </div>
+  </section>
+
+  <div class="quickbar" data-quickbar>
+    <div class="quickbar__total">
+      <span>Totale</span>
+      <strong data-quick-total>EUR 0,00</strong>
+    </div>
+    <a class="quickbar__cta" href="#ordine">Vai al carrello</a>
+  </div>
+
+  <div class="modal" data-modal aria-hidden="true">
+    <div class="modal__overlay" data-modal-close></div>
+    <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <button class="modal__close" type="button" data-modal-close>Chiudi</button>
+      <h3 id="modal-title" data-modal-title></h3>
+      <p class="modal__subtitle" data-modal-subtitle></p>
+      <div class="modal__body" data-modal-body></div>
+      <div class="modal__footer">
+        <label class="field field--inline">
+          <span>Quantita</span>
+          <input type="number" min="1" value="1" data-modal-qty>
+        </label>
+        <div class="modal__total">
+          <span>Totale</span>
+          <strong data-modal-total>EUR 0,00</strong>
+        </div>
+        <button class="modal__cta" type="button" data-modal-add>Aggiungi</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="menu.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

@@ -13,44 +13,120 @@
   <header class="hero">
     <div class="hero__copy">
       <div class="hero__logo">
-        <img src="img/logoGustonew.png" alt="Gusto Donnini logo">
+        <img src="img/logoGustoOld.png" alt="Gusto Donnini logo" class="logo-toggle" data-logo-primary="img/logoGustoOld.png" data-logo-secondary="img/logoGustoPop.png">
       </div>
-      <p class="lead">Sapori toscani, impasti lenti, stagionalita viva.</p>
       <div class="hero__meta">
-        <span>Piazza Domenico Fiaschi 9</span>
-        <span>Donnini 50066 Reggello (FI)</span>
-        <span>+39 347 311 8588</span>
+        <span class="hero__meta-item hero__meta-item--address">
+          <img src="img/icone e loghi/maps.svg" alt="" class="hero__meta-icon" aria-hidden="true">
+          Piazza D. Fiaschi, 9, 50066 Donnini FI
+        </span>
       </div>
       <div class="hero__actions">
-        <a class="hero__cta" href="#ordine">Ordina ora</a>
-        <a class="hero__cta hero__cta--ghost" href="#menu">Vedi menu</a>
-        <a class="hero__cta hero__cta--ghost" href="menu-staff.html">Area personale</a>
+        <a class="hero__cta" href="tel:+393473118588">
+          <span class="icon icon--sm icon--ordini" aria-hidden="true"></span>
+          Prenota ora
+        </a>
+        <a class="hero__cta" href="#menu">
+          <span class="icon icon--sm icon--menu" aria-hidden="true"></span>
+          Vedi menu
+        </a>
       </div>
     </div>
   </header>
 
-  <section class="social-theme" aria-label="Social e temi">
-    <div class="social-box">
-      <a href="https://www.instagram.com/gustodonnini/" target="_blank" rel="noopener">
-        <img src="img/icone e loghi/insta.png" alt="Instagram" class="social-img">
-      </a>
-      <a href="https://www.threads.net/@gustodonnini?xmt=AQGz9GO09kmpFFwQC3Gv2jEXv79JLWvkFMWOiWxUFduG4Go" target="_blank" rel="noopener">
-        <img src="img/icone e loghi/threads.png" alt="Threads" class="social-img">
-      </a>
-      <a href="https://www.facebook.com/baralimentari.gusto/?locale=it_IT" target="_blank" rel="noopener">
-        <img src="img/icone e loghi/faceb.png" alt="Facebook" class="social-img">
-      </a>
-      <a href="https://www.tiktok.com/@gustodonnini?_t=ZN-8vaaMHpMr1a&_r=1" target="_blank" rel="noopener">
-        <img src="img/icone e loghi/tiktokn.png" alt="TikTok" class="social-img">
-      </a>
-      <a href="https://maps.app.goo.gl/3QWHf8vExNo6zLfA9" target="_blank" rel="noopener">
-        <img src="img/icone e loghi/maps.png" alt="Maps" class="social-img">
-      </a>
-      <a href="https://www.tripadvisor.it/Restaurant_Review-g644275-d5937649-Reviews-Gusto-Donnini_Tuscany.html" target="_blank" rel="noopener">
-        <img src="img/icone e loghi/tripadvisor.png" alt="TripAdvisor" class="social-img">
-      </a>
+  <section class="filters" aria-label="Filtri menu">
+    <div class="filters__label">Categorie</div>
+    <div class="filters__chips" data-filters></div>
+    <div class="filters__search">
+      <input type="search" placeholder="Cerca un piatto" aria-label="Cerca un piatto" data-search>
+      <button type="button" data-search-clear>Reset</button>
+    </div>
+  </section>
+
+  <main class="menu" data-menu id="menu"></main>
+  <p class="menu__empty" data-menu-empty>Nessun risultato. Prova un altro termine o rimuovi i filtri.</p>
+
+  <section class="order" id="ordine">
+    <div class="order__summary">
+      <h2>Il tuo ordine</h2>
+      <p class="order__empty" data-order-empty>Nessun articolo aggiunto.</p>
+      <ul class="order__list" data-order-list></ul>
+      <div class="order__total">
+        <span>Totale</span>
+      <strong data-order-total>€ 0,00</strong>
+      </div>
+      <p class="order__note" data-order-note></p>
+    </div>
+    <div class="order__cards">
+      <article class="order__card">
+        <h3>Ordina su WhatsApp</h3>
+        <p>Per clienti. Inserisci un nome e una nota se serve.</p>
+        <label class="field">
+          <span>Nome</span>
+          <input type="text" data-field="customer-name" placeholder="Es. Luca">
+        </label>
+        <label class="field">
+          <span>Tavolo</span>
+          <input type="text" data-field="customer-table" placeholder="Es. Tavolo 4">
+        </label>
+        <label class="field">
+          <span>Note</span>
+          <textarea rows="3" data-field="customer-note" placeholder="Es. senza cipolla"></textarea>
+        </label>
+        <button class="order__cta" type="button" data-whatsapp="customer" data-phone="390000000000">
+          <span class="icon icon--sm icon--invia" aria-hidden="true"></span>
+          Invia ordine cliente
+        </button>
+      </article>
+    </div>
+    <div class="order__reset-wrap">
+      <button class="order__reset order__reset--danger" type="button" data-reset-order>Reset comanda</button>
+    </div>
+  </section>
+
+  <section class="legend">
+    <h2>Allergeni</h2>
+    <p>Chiedi al personale per informazioni complete.</p>
+    <div class="legend__list" data-legend></div>
+  </section>
+
+  <footer class="footer">
+    <div>
+      <h2>Note</h2>
+      <p>Prezzi e disponibilita possono variare.</p>
+    </div>
+    <div class="footer__social" aria-label="Social">
+      <h3>Social</h3>
+      <div class="footer__social-links">
+        <a href="https://www.instagram.com/gustodonnini/" target="_blank" rel="noopener">
+          <img src="img/icone e loghi/insta.png" alt="Instagram" class="social-img">
+        </a>
+        <a href="https://www.threads.net/@gustodonnini?xmt=AQGz9GO09kmpFFwQC3Gv2jEXv79JLWvkFMWOiWxUFduG4Go" target="_blank" rel="noopener">
+          <img src="img/icone e loghi/threads.png" alt="Threads" class="social-img">
+        </a>
+        <a href="https://www.facebook.com/baralimentari.gusto/?locale=it_IT" target="_blank" rel="noopener">
+          <img src="img/icone e loghi/faceb.png" alt="Facebook" class="social-img">
+        </a>
+        <a href="https://www.tiktok.com/@gustodonnini?_t=ZN-8vaaMHpMr1a&_r=1" target="_blank" rel="noopener">
+          <img src="img/icone e loghi/tiktokn.png" alt="TikTok" class="social-img">
+        </a>
+        <a href="https://maps.app.goo.gl/3QWHf8vExNo6zLfA9" target="_blank" rel="noopener">
+          <img src="img/icone e loghi/maps.png" alt="Maps" class="social-img">
+        </a>
+        <a href="https://www.tripadvisor.it/Restaurant_Review-g644275-d5937649-Reviews-Gusto-Donnini_Tuscany.html" target="_blank" rel="noopener">
+          <img src="img/icone e loghi/tripadvisor.png" alt="TripAdvisor" class="social-img">
+        </a>
+      </div>
       <p>Seguici sui social e lasciaci una recensione</p>
     </div>
+    <div class="footer__hours">
+      <h3>Orari</h3>
+      <p>Mar - Dom: 12:00 - 15:00 / 19:00 - 23:00</p>
+      <p>Lunedi: chiuso</p>
+    </div>
+  </footer>
+
+  <section class="footer-themes" aria-label="Temi">
     <div class="theme-selector" aria-label="Selettore temi">
       <span class="theme-selector__label">Temi</span>
       <div class="theme-options">
@@ -79,70 +155,10 @@
     </div>
   </section>
 
-  <section class="filters" aria-label="Filtri menu">
-    <div class="filters__label">Categorie</div>
-    <div class="filters__chips" data-filters></div>
-    <div class="filters__search">
-      <input type="search" placeholder="Cerca un piatto" aria-label="Cerca un piatto" data-search>
-      <button type="button" data-search-clear>Reset</button>
-    </div>
-  </section>
-
-  <main class="menu" data-menu id="menu"></main>
-  <p class="menu__empty" data-menu-empty>Nessun risultato. Prova un altro termine o rimuovi i filtri.</p>
-
-  <section class="order" id="ordine">
-    <div class="order__summary">
-      <h2>Il tuo ordine</h2>
-      <p class="order__empty" data-order-empty>Nessun articolo aggiunto.</p>
-      <ul class="order__list" data-order-list></ul>
-      <div class="order__total">
-        <span>Totale</span>
-        <strong data-order-total>EUR 0,00</strong>
-      </div>
-      <p class="order__note" data-order-note></p>
-    </div>
-    <div class="order__cards">
-      <article class="order__card">
-        <h3>Ordina su WhatsApp</h3>
-        <p>Per clienti. Inserisci un nome e una nota se serve.</p>
-        <label class="field">
-          <span>Nome</span>
-          <input type="text" data-field="customer-name" placeholder="Es. Luca">
-        </label>
-        <label class="field">
-          <span>Note</span>
-          <textarea rows="3" data-field="customer-note" placeholder="Es. senza cipolla"></textarea>
-        </label>
-        <button class="order__cta" type="button" data-whatsapp="customer" data-phone="390000000000">
-          Invia ordine cliente
-        </button>
-      </article>
-    </div>
-  </section>
-
-  <section class="legend">
-    <h2>Allergeni</h2>
-    <p>Chiedi al personale per informazioni complete.</p>
-    <div class="legend__list" data-legend></div>
-  </section>
-
-  <footer class="footer">
-    <div>
-      <h2>Note</h2>
-      <p>Prezzi e disponibilita possono variare.</p>
-    </div>
-    <div class="footer__hours">
-      <h3>Orari</h3>
-      <p>Mar - Dom: 12:00 - 15:00 / 19:00 - 23:00</p>
-      <p>Lunedi: chiuso</p>
-    </div>
-  </footer>
-
   <div class="quickbar" data-quickbar>
     <div class="quickbar__total">
       <span>Totale</span>
-      <strong data-quick-total>EUR 0,00</strong>
+      <strong data-quick-total>€ 0,00</strong>
     </div>
     <a class="quickbar__cta" href="#ordine">Vai all ordine</a>
   </div>
@@ -161,7 +177,7 @@
         </label>
         <div class="modal__total">
           <span>Totale</span>
-          <strong data-modal-total>EUR 0,00</strong>
+          <strong data-modal-total>€ 0,00</strong>
         </div>
         <button class="modal__cta" type="button" data-modal-add>Aggiungi</button>
       </div>

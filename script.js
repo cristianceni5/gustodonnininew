@@ -11,7 +11,7 @@ const orderListEl = document.querySelector('[data-order-list]');
 const orderEmptyEl = document.querySelector('[data-order-empty]');
 const orderTotalEl = document.querySelector('[data-order-total]');
 const orderButtons = document.querySelectorAll('[data-whatsapp]');
-const resetButton = document.querySelector('[data-reset-order]');
+const resetButtons = document.querySelectorAll('[data-reset-order]');
 const searchInput = document.querySelector('[data-search]');
 const searchClear = document.querySelector('[data-search-clear]');
 const quickTotalEl = document.querySelector('[data-quick-total]');
@@ -42,14 +42,17 @@ let searchQuery = '';
 let activeModalType = null;
 
 const applyTheme = (theme) => {
-  if (!document.body || !themeClasses.length) {
+  const targets = [document.documentElement, document.body].filter(Boolean);
+  if (!targets.length || !themeClasses.length) {
     return;
   }
 
-  themeClasses.forEach((className) => document.body.classList.remove(className));
-  if (theme) {
-    document.body.classList.add(theme);
-  }
+  targets.forEach((target) => {
+    themeClasses.forEach((className) => target.classList.remove(className));
+    if (theme) {
+      target.classList.add(theme);
+    }
+  });
 
   themeButtons.forEach((button) => {
     const isActive = button.dataset.theme === theme;
@@ -104,7 +107,7 @@ const ingredientOptions = [
 const customizationConfigs = {
   pizza: {
     title: 'Pizza personalizzata',
-    subtitle: 'Base covaccino, bianca o rossa. Ingredienti extra: EUR 1 ciascuno.',
+    subtitle: 'Base covaccino, bianca o rossa. Ingredienti extra: € 1 ciascuno.',
     fields: [
       {
         id: 'base',
@@ -120,14 +123,14 @@ const customizationConfigs = {
       },
       {
         id: 'ingredienti',
-        label: 'Ingredienti extra (EUR 1 ciascuno)',
+        label: 'Ingredienti extra (€ 1 ciascuno)',
         type: 'checkbox',
         pricePerItem: 1,
         options: ingredientOptions,
       },
       {
         id: 'glutenfree',
-        label: 'Impasto senza glutine (EUR 1)',
+        label: 'Impasto senza glutine (€ 1)',
         type: 'checkbox',
         pricePerItem: 1,
         options: [{ value: 'senza-glutine', label: 'Senza glutine' }],
@@ -142,7 +145,7 @@ const customizationConfigs = {
   },
   calzone: {
     title: 'Calzone personalizzato',
-    subtitle: 'Ripieno a scelta. Ingredienti extra: EUR 1 ciascuno.',
+    subtitle: 'Ripieno a scelta. Ingredienti extra: € 1 ciascuno.',
     fields: [
       {
         id: 'base',
@@ -154,14 +157,14 @@ const customizationConfigs = {
       },
       {
         id: 'ingredienti',
-        label: 'Ripieno extra (EUR 1 ciascuno)',
+        label: 'Ripieno extra (€ 1 ciascuno)',
         type: 'checkbox',
         pricePerItem: 1,
         options: ingredientOptions,
       },
       {
         id: 'glutenfree',
-        label: 'Impasto senza glutine (EUR 1)',
+        label: 'Impasto senza glutine (€ 1)',
         type: 'checkbox',
         pricePerItem: 1,
         options: [{ value: 'senza-glutine', label: 'Senza glutine' }],
@@ -298,7 +301,7 @@ const formatPrice = (price) => {
     return '';
   }
   const formatted = price.toFixed(2).replace('.', ',');
-  return `EUR ${formatted}`;
+  return `€ ${formatted}`;
 };
 
 const normalizeText = (value) => String(value || '').toLowerCase();
@@ -331,6 +334,176 @@ const sanitizeDescription = (value) => {
   return cleaned;
 };
 
+const closeInfoPanels = () => {
+  document.querySelectorAll('.menu__info-panel.is-open').forEach((panel) => {
+    panel.classList.remove('is-open');
+    const button = panel.closest('.menu__item')?.querySelector('.menu__info');
+    if (button) {
+      button.setAttribute('aria-expanded', 'false');
+    }
+  });
+};
+
+const resetOrder = (delayMs = 0) => {
+  cart.clear();
+  updateCartUI();
+  document.querySelectorAll('[data-field]').forEach((field) => {
+    if ('value' in field) {
+      field.value = '';
+    }
+  });
+  const menuTarget = document.querySelector('#menu');
+  if (menuTarget) {
+    if (delayMs > 0) {
+      setTimeout(() => {
+        menuTarget.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, delayMs);
+    } else {
+      menuTarget.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+};
+
+const triggerResetBurst = (button) => {
+  if (!button) {
+    return;
+  }
+  const burst = document.createElement('span');
+  burst.className = 'order__reset-burst';
+  const ring = document.createElement('span');
+  ring.className = 'order__reset-burst--ring';
+  button.appendChild(burst);
+  button.appendChild(ring);
+  burst.addEventListener('animationend', () => burst.remove(), { once: true });
+  ring.addEventListener('animationend', () => ring.remove(), { once: true });
+
+  button.classList.remove('is-bursting');
+  void button.offsetWidth;
+  button.classList.add('is-bursting');
+  button.addEventListener('animationend', () => {
+    button.classList.remove('is-bursting');
+  }, { once: true });
+};
+
+const preloadLogoSource = (src) => {
+  if (!src) {
+    return Promise.resolve();
+  }
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.src = src;
+    if (typeof img.decode === 'function') {
+      img.decode().then(resolve).catch(resolve);
+    } else {
+      img.onload = resolve;
+      img.onerror = resolve;
+    }
+  });
+};
+
+const initLogoSwap = () => {
+  const logos = document.querySelectorAll('img[data-logo-primary][data-logo-secondary]');
+  logos.forEach((logo) => {
+    const primary = logo.dataset.logoPrimary || '';
+    const secondary = logo.dataset.logoSecondary || '';
+    preloadLogoSource(primary);
+    preloadLogoSource(secondary);
+    logo.addEventListener('click', () => {
+      if (logo.dataset.swapping === 'true') {
+        return;
+      }
+      if (!primary || !secondary) {
+        return;
+      }
+      const currentSrc = logo.getAttribute('src') || '';
+      const isPrimary = currentSrc.endsWith(primary);
+      const nextSrc = isPrimary ? secondary : primary;
+      logo.dataset.swapping = 'true';
+      preloadLogoSource(nextSrc).then(() => {
+        logo.classList.remove('is-swapping');
+        void logo.offsetWidth;
+        logo.classList.add('is-swapping');
+        const duration = parseFloat(getComputedStyle(logo).animationDuration) || 0.8;
+        const durationMs = duration * 1000;
+        const swapDelay = Math.max(0, durationMs * 0.5);
+        setTimeout(() => {
+          logo.src = nextSrc;
+        }, swapDelay);
+        logo.addEventListener(
+          'animationend',
+          () => {
+            logo.classList.remove('is-swapping');
+            delete logo.dataset.swapping;
+          },
+          { once: true }
+        );
+      });
+    });
+  });
+};
+
+const formatItemLabel = (item) => {
+  const baseName = item && item.nome ? item.nome : 'Piatto';
+  const note = item && item.customNote ? String(item.customNote).trim() : '';
+  if (!note) {
+    return baseName;
+  }
+  if (normalizeText(note).includes('senza glutine')) {
+    return `${baseName} - senza glutine`;
+  }
+  return `${baseName} - ${note}`;
+};
+
+const groupCartItems = (entries) => {
+  const grouped = new Map();
+  const categoryOrder = categories.map((group) => group.categoria);
+  const orderIndex = new Map(categoryOrder.map((name, index) => [name, index]));
+
+  entries.forEach((entry) => {
+    const category = entry.item && entry.item.category ? entry.item.category : 'Personalizzati';
+    if (!grouped.has(category)) {
+      grouped.set(category, []);
+    }
+    grouped.get(category).push(entry);
+  });
+
+  const orderedCategories = Array.from(grouped.keys()).sort((a, b) => {
+    const aIndex = orderIndex.has(a) ? orderIndex.get(a) : Number.MAX_SAFE_INTEGER;
+    const bIndex = orderIndex.has(b) ? orderIndex.get(b) : Number.MAX_SAFE_INTEGER;
+    if (aIndex !== bIndex) {
+      return aIndex - bIndex;
+    }
+    return a.localeCompare(b);
+  });
+
+  return { grouped, orderedCategories };
+};
+
+const iconClasses = {
+  invia: 'icon--invia',
+  glutine: 'icon--glutine',
+  remove: 'icon--remove',
+  menu: 'icon--menu',
+  ordini: 'icon--ordini',
+  privato: 'icon--privato',
+  ordineinviato: 'icon--ordineinviato',
+  map: 'icon--map',
+};
+
+const createIcon = (name, className = 'icon icon--sm') => {
+  const iconClass = iconClasses[name];
+  if (!iconClass) {
+    return null;
+  }
+  const icon = document.createElement('span');
+  const classes = `${className} ${iconClass}`.trim();
+  if (classes) {
+    icon.className = classes;
+  }
+  icon.setAttribute('aria-hidden', 'true');
+  return icon;
+};
+
 const categories = menuData.filter((group) => Array.isArray(group.prodotti) && group.prodotti.length);
 
 const getAllergens = () => {
@@ -361,7 +534,6 @@ const buildFilters = (groups) => {
     return;
   }
   filtersEl.innerHTML = '';
-  filtersEl.appendChild(createChip('Tutto', 'all', true));
   groups.forEach((group) => {
     filtersEl.appendChild(createChip(group.categoria, group.slug, false));
   });
@@ -498,14 +670,74 @@ const createMenuItem = (item, category) => {
 
   content.appendChild(title);
 
-  if (item.descrizione) {
-    const description = document.createElement('p');
-    description.innerHTML = sanitizeDescription(item.descrizione);
-    content.appendChild(description);
+  const allergens = Array.isArray(item.allergeni) ? item.allergeni.filter(Boolean) : [];
+  const hasDescription = Boolean(item.descrizione);
+  const hasAllergens = allergens.length > 0;
+
+  let infoButton = null;
+  let infoPanel = null;
+  if (hasDescription || hasAllergens) {
+    if (hasAllergens && !hasDescription) {
+      card.classList.add('menu__item--allergens-only');
+    }
+    const infoId = `info-${key.replace(/[^a-z0-9]+/gi, '-')}`;
+    infoButton = document.createElement('button');
+    infoButton.type = 'button';
+    infoButton.className = 'menu__info';
+    infoButton.setAttribute('aria-label', 'Info');
+    infoButton.setAttribute('aria-expanded', 'false');
+    infoButton.setAttribute('aria-controls', infoId);
+    infoButton.textContent = 'i';
+
+    infoPanel = document.createElement('div');
+    infoPanel.className = 'menu__info-panel';
+    infoPanel.id = infoId;
+    infoPanel.setAttribute('role', 'tooltip');
+
+    if (hasDescription) {
+      const infoText = document.createElement('p');
+      infoText.className = 'menu__info-text';
+      infoText.innerHTML = sanitizeDescription(item.descrizione);
+      infoPanel.appendChild(infoText);
+    }
+
+    if (hasAllergens) {
+      const infoAllergens = document.createElement('div');
+      infoAllergens.className = 'menu__info-allergens';
+
+      const infoLabel = document.createElement('span');
+      infoLabel.className = 'menu__info-label';
+      infoLabel.textContent = 'Allergeni';
+      infoAllergens.appendChild(infoLabel);
+
+      allergens.forEach((allergen) => {
+        const badge = document.createElement('span');
+        badge.className = 'menu__allergen';
+        badge.textContent = allergenLabels[allergen] || allergen;
+        infoAllergens.appendChild(badge);
+      });
+      infoPanel.appendChild(infoAllergens);
+    }
+
+    infoButton.addEventListener('click', (event) => {
+      event.stopPropagation();
+      const isOpen = infoPanel.classList.contains('is-open');
+      closeInfoPanels();
+      if (!isOpen) {
+        infoPanel.classList.add('is-open');
+        infoButton.setAttribute('aria-expanded', 'true');
+      }
+    });
+
+    infoPanel.addEventListener('click', (event) => {
+      event.stopPropagation();
+    });
+
+    card.appendChild(infoButton);
+    card.appendChild(infoPanel);
   }
 
-  const allergens = Array.isArray(item.allergeni) ? item.allergeni.filter(Boolean) : [];
-  if (allergens.length) {
+  if (hasAllergens) {
     const allergenWrap = document.createElement('div');
     allergenWrap.className = 'menu__allergens';
     allergens.forEach((allergen) => {
@@ -534,7 +766,7 @@ const createMenuItem = (item, category) => {
       glutenInput.className = 'menu__gluten-input';
 
       const glutenText = document.createElement('span');
-      glutenText.textContent = 'Senza glutine (+EUR 1)';
+      glutenText.textContent = 'Senza glutine';
 
       glutenWrap.appendChild(glutenInput);
       glutenWrap.appendChild(glutenText);
@@ -547,7 +779,20 @@ const createMenuItem = (item, category) => {
 
   const price = document.createElement('span');
   price.className = 'menu__price';
-  price.textContent = isCustom ? 'Personalizza' : formatPrice(basePrice);
+  if (isCustom) {
+    price.classList.add('menu__price--custom');
+    const label = document.createElement('span');
+    label.className = 'menu__price-label';
+    label.textContent = 'A partire da';
+
+    const value = document.createElement('span');
+    value.className = 'menu__price-value';
+    value.textContent = formatPrice(basePrice);
+
+    price.append(label, value);
+  } else {
+    price.textContent = formatPrice(basePrice);
+  }
 
   meta.appendChild(price);
   content.appendChild(meta);
@@ -579,6 +824,9 @@ const createMenuItem = (item, category) => {
     if (event.target.closest('.menu__gluten')) {
       return;
     }
+    if (event.target.closest('.menu__info') || event.target.closest('.menu__info-panel')) {
+      return;
+    }
     if (isCustom) {
       openModal(customType);
       return;
@@ -593,9 +841,10 @@ const createMenuItem = (item, category) => {
       if (!menuItems.has(targetKey)) {
         menuItems.set(targetKey, {
           ...item,
-          nome: `${item.nome} (senza glutine)`,
           prezzo: basePrice + 1,
           customNote: 'Senza glutine',
+          category: category.categoria,
+          baseKey: key,
         });
       }
     }
@@ -650,10 +899,12 @@ const buildSections = (groups) => {
 
 const applyFilters = () => {
   const query = normalizeText(searchQuery.trim());
+  const isSearching = Boolean(query);
   let anyVisible = false;
+  let firstVisibleSection = null;
 
   document.querySelectorAll('.menu__section').forEach((section) => {
-    const sectionMatches = activeFilter === 'all' || section.dataset.section === activeFilter;
+    const sectionMatches = isSearching || activeFilter === 'all' || section.dataset.section === activeFilter;
     if (!sectionMatches) {
       section.style.display = 'none';
       return;
@@ -671,11 +922,20 @@ const applyFilters = () => {
     section.style.display = sectionVisible ? 'grid' : 'none';
     if (sectionVisible) {
       anyVisible = true;
+      if (!firstVisibleSection) {
+        firstVisibleSection = section;
+      }
     }
   });
 
   if (menuEmptyEl) {
     menuEmptyEl.style.display = anyVisible ? 'none' : 'block';
+  }
+
+  if (isSearching && firstVisibleSection) {
+    requestAnimationFrame(() => {
+      firstVisibleSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
   }
 };
 
@@ -729,7 +989,7 @@ const updateQuickbar = (items, total) => {
     return;
   }
 
-  quickTotalEl.textContent = formatPrice(total) || 'EUR 0,00';
+  quickTotalEl.textContent = formatPrice(total) || '€ 0,00';
   quickbarEl.classList.toggle('is-active', items.length > 0);
 };
 
@@ -762,37 +1022,58 @@ const updateCartUI = () => {
     orderEmptyEl.style.display = 'none';
   }
 
-  items.forEach((entry) => {
-    const itemRow = document.createElement('li');
-    itemRow.className = 'order__item';
+  const { grouped, orderedCategories } = groupCartItems(items);
 
-    const detail = document.createElement('span');
-    detail.className = 'order__detail';
-    const note = entry.item.customNote ? ` - ${entry.item.customNote}` : '';
-    detail.textContent = `${entry.qty}x ${entry.item.nome}${note}`;
+  orderedCategories.forEach((category) => {
+    const heading = document.createElement('li');
+    heading.className = 'order__category';
+    heading.textContent = category;
+    orderListEl.appendChild(heading);
 
-    const meta = document.createElement('div');
-    meta.className = 'order__item-meta';
+    grouped.get(category).forEach((entry) => {
+      const itemRow = document.createElement('li');
+      itemRow.className = 'order__item';
 
-    const price = document.createElement('span');
-    price.textContent = formatPrice(entry.lineTotal) || 'EUR 0,00';
+      const detail = document.createElement('span');
+      detail.className = 'order__detail';
+      const qty = document.createElement('span');
+      qty.className = 'order__qty';
+      qty.textContent = `${entry.qty}x`;
 
-    const remove = document.createElement('button');
-    remove.type = 'button';
-    remove.className = 'order__remove';
-    remove.textContent = 'Rimuovi';
-    remove.addEventListener('click', () => removeFromCart(entry.key));
+      const label = document.createElement('span');
+      label.className = 'order__label';
+      label.textContent = formatItemLabel(entry.item);
 
-    meta.appendChild(price);
-    meta.appendChild(remove);
+      detail.appendChild(qty);
+      detail.appendChild(label);
 
-    itemRow.appendChild(detail);
-    itemRow.appendChild(meta);
+      const meta = document.createElement('div');
+      meta.className = 'order__item-meta';
 
-    orderListEl.appendChild(itemRow);
+      const price = document.createElement('span');
+      price.textContent = formatPrice(entry.lineTotal) || '€ 0,00';
+
+      const remove = document.createElement('button');
+      remove.type = 'button';
+      remove.className = 'order__remove';
+      const removeIcon = createIcon('remove', 'icon icon--xs');
+      if (removeIcon) {
+        remove.appendChild(removeIcon);
+      }
+      remove.append('Rimuovi');
+      remove.addEventListener('click', () => removeFromCart(entry.key));
+
+      meta.appendChild(price);
+      meta.appendChild(remove);
+
+      itemRow.appendChild(detail);
+      itemRow.appendChild(meta);
+
+      orderListEl.appendChild(itemRow);
+    });
   });
 
-  orderTotalEl.textContent = formatPrice(total) || 'EUR 0,00';
+  orderTotalEl.textContent = formatPrice(total) || '€ 0,00';
   updateQuickbar(items, total);
   updateCardQuantities();
 };
@@ -819,7 +1100,11 @@ const addToCart = (key, sourceEl) => {
 const addCustomToCart = (item, qty) => {
   const key = `custom::${slugify(item.nome)}::${Date.now()}`;
   const baseKey = customTypeBaseKey.get(activeModalType);
-  const storedItem = baseKey ? { ...item, baseKey } : item;
+  let category = item.category;
+  if (!category && baseKey && menuItems.has(baseKey)) {
+    category = menuItems.get(baseKey).category;
+  }
+  const storedItem = baseKey ? { ...item, baseKey, category } : { ...item, category };
   cart.set(key, { key, item: storedItem, qty });
   updateCartUI();
 };
@@ -854,6 +1139,7 @@ const buildMessage = (scope) => {
   }
 
   const customerName = document.querySelector('[data-field="customer-name"]');
+  const customerTable = document.querySelector('[data-field="customer-table"]');
   const customerNote = document.querySelector('[data-field="customer-note"]');
   const staffTable = document.querySelector('[data-field="staff-table"]');
   const staffCovers = document.querySelector('[data-field="staff-covers"]');
@@ -862,6 +1148,10 @@ const buildMessage = (scope) => {
 
   if (scope === 'customer' && customerName && customerName.value.trim()) {
     lines.push(`Nome: ${customerName.value.trim()}`);
+  }
+
+  if (scope === 'customer' && customerTable && customerTable.value.trim()) {
+    lines.push(`Tavolo: ${customerTable.value.trim()}`);
   }
 
   if (scope === 'staff' && staffTable && staffTable.value.trim()) {
@@ -878,9 +1168,12 @@ const buildMessage = (scope) => {
 
   lines.push('Articoli:');
 
-  items.forEach((entry) => {
-    const note = entry.item.customNote ? ` - ${entry.item.customNote}` : '';
-    lines.push(`- ${entry.qty}x ${entry.item.nome}${note} (${formatPrice(Number(entry.item.prezzo))})`);
+  const { grouped, orderedCategories } = groupCartItems(items);
+  orderedCategories.forEach((category) => {
+    lines.push(`${category}:`);
+    grouped.get(category).forEach((entry) => {
+      lines.push(`- ${entry.qty}x ${formatItemLabel(entry.item)}`);
+    });
   });
 
   lines.push(`Totale: ${formatPrice(total)}`);
@@ -1089,7 +1382,7 @@ const updateModalTotal = () => {
     return;
   }
 
-  modalTotalEl.textContent = formatPrice(state.total) || 'EUR 0,00';
+  modalTotalEl.textContent = formatPrice(state.total) || '€ 0,00';
   modalAddButton.disabled = !state.isValid;
 };
 
@@ -1232,6 +1525,7 @@ const handleModalAdd = () => {
 
 const init = () => {
   initTheme();
+  initLogoSwap();
 
   const mappedCategories = categories.map((group) => ({
     ...group,
@@ -1241,7 +1535,14 @@ const init = () => {
   buildFilters(mappedCategories);
   buildSections(mappedCategories);
   renderLegend();
-  applyFilters();
+  const defaultCategory = mappedCategories.find(
+    (group) => normalizeText(group.categoria) === 'caffetteria'
+  );
+  if (defaultCategory) {
+    setActiveFilter(defaultCategory.slug);
+  } else {
+    applyFilters();
+  }
 
   if (filtersEl) {
     enableDragScroll(filtersEl);
@@ -1254,8 +1555,10 @@ const init = () => {
       if (!button) {
         return;
       }
-      setActiveFilter(button.dataset.filter);
-      scrollToSection(button.dataset.filter);
+      const nextFilter = button.dataset.filter;
+      const filter = nextFilter === activeFilter ? 'all' : nextFilter;
+      setActiveFilter(filter);
+      scrollToSection(filter);
     });
   }
 
@@ -1279,17 +1582,12 @@ const init = () => {
     button.addEventListener('click', () => handleWhatsApp(button));
   });
 
-  if (resetButton) {
-    resetButton.addEventListener('click', () => {
-      cart.clear();
-      updateCartUI();
-      document.querySelectorAll('[data-field^="staff-"]').forEach((field) => {
-        if ('value' in field) {
-          field.value = '';
-        }
-      });
+  resetButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      triggerResetBurst(button);
+      resetOrder(1000);
     });
-  }
+  });
 
   if (modalBodyEl) {
     modalBodyEl.addEventListener('input', updateModalTotal);
@@ -1308,9 +1606,19 @@ const init = () => {
     button.addEventListener('click', closeModal);
   });
 
+  document.addEventListener('click', (event) => {
+    if (event.target.closest('.menu__info') || event.target.closest('.menu__info-panel')) {
+      return;
+    }
+    closeInfoPanels();
+  });
+
   document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && modalEl && modalEl.classList.contains('is-open')) {
-      closeModal();
+    if (event.key === 'Escape') {
+      if (modalEl && modalEl.classList.contains('is-open')) {
+        closeModal();
+      }
+      closeInfoPanels();
     }
   });
 

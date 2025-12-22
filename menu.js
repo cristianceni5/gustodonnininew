@@ -69,6 +69,14 @@ const menu = [ //Menù completo 11/08/2025
             { nome: "Birra Tennent's", prezzo: 3, immagine: "img/bevande/birratennents.png", allergeni: [] },
             { nome: "Birra Menabrea", prezzo: 3.50, immagine: "img/bevande/birramena.png", allergeni: [] },
             { nome: "Birra senza glutine", prezzo: 3.5, immagine: "img/bevande/birranogl.png", allergeni: [] },
+            { nome: "Eva - Blond Ale", prezzo: 3.5, descrizione:"Alc. 5,0%", immagine: "img/bevande/birranogl.png", allergeni: [] },
+            { nome: "Honey - Honey Ale", prezzo: 3.5, descrizione:"Alc. 6,3%", immagine: "img/bevande/birranogl.png", allergeni: [] },
+            { nome: "Saudade - India Pale Ale", prezzo: 3.5, descrizione:"Alc. 5,5%", immagine: "img/bevande/birranogl.png", allergeni: [] },
+            { nome: "Bea - Red Ale", prezzo: 3.5, descrizione:"Alc. 7,0%", immagine: "img/bevande/birranogl.png", allergeni: [] },
+            { nome: "Catalano - Tripel", prezzo: 3.5, descrizione:"Alc. 8,5%", immagine: "img/bevande/birranogl.png", allergeni: [] },
+            { nome: "Tosca - Blanche", prezzo: 3.5, descrizione:"Alc. 4,6%", immagine: "img/bevande/birranogl.png", allergeni: [] },
+            { nome: "Kali - India Pale Ale", prezzo: 3.5, descrizione:"Alc. 6,5%", immagine: "img/bevande/birranogl.png", allergeni: [] },
+            { nome: "Petr - Milk Stout", prezzo: 3.5, descrizione:"Alc. 5,5%", immagine: "img/bevande/birranogl.png", allergeni: [] },
         ]
     },
     {

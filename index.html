@@ -1,8 +1,9 @@
-<!doctype html>
+<!-- Developed by Cristian Ceni 2025, all the rights are reserved -->
+<!DOCTYPE html>
 <html lang="it">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Gusto Donnini - Menu</title>
   <meta name="description" content="Menu moderno con foto, categorie e ordini via WhatsApp.">
   <link rel="stylesheet" href="styles.css">
@@ -15,12 +16,7 @@
       <div class="hero__logo">
         <img src="img/logoGustoOld.png" alt="Gusto Donnini logo" class="logo-toggle" data-logo-primary="img/logoGustoOld.png" data-logo-secondary="img/logoGustoPop.png">
       </div>
-      <div class="hero__meta">
-        <span class="hero__meta-item hero__meta-item--address">
-          <img src="img/icone e loghi/maps.svg" alt="" class="hero__meta-icon" aria-hidden="true">
-          Piazza D. Fiaschi, 9, 50066 Donnini FI
-        </span>
-      </div>
+
       <div class="hero__actions">
         <a class="hero__cta" href="tel:+393473118588">
           <span class="icon icon--sm icon--ordini" aria-hidden="true"></span>
@@ -36,10 +32,10 @@
 
   <section class="filters" aria-label="Filtri menu">
     <div class="filters__label">Categorie</div>
-    <div class="filters__chips" data-filters></div>
-    <div class="filters__search">
-      <input type="search" placeholder="Cerca un piatto" aria-label="Cerca un piatto" data-search>
-      <button type="button" data-search-clear>Reset</button>
+    <div class="filters__chips" data-filters>
+      <button class="filters__search-toggle" type="button" data-search-toggle aria-expanded="false">
+        Cerca
+      </button>
     </div>
   </section>
 
@@ -123,37 +119,43 @@
       <h3>Orari</h3>
       <p>Mar - Dom: 12:00 - 15:00 / 19:00 - 23:00</p>
       <p>Lunedi: chiuso</p>
-    </div>
-  </footer>
-
-  <section class="footer-themes" aria-label="Temi">
-    <div class="theme-selector" aria-label="Selettore temi">
-      <span class="theme-selector__label">Temi</span>
-      <div class="theme-options">
-        <button class="theme-option" type="button" data-theme="theme-original" aria-label="Classico" aria-pressed="false" style="--stripe-1: #d3642a; --stripe-2: #b14f22; --stripe-3: #f4f4f4;">
-          <span class="color-stripes" aria-hidden="true">
-            <span></span>
-            <span></span>
-            <span></span>
-          </span>
-        </button>
-        <button class="theme-option" type="button" data-theme="theme-reserved" aria-label="Neutro" aria-pressed="false" style="--stripe-1: #2f2f2f; --stripe-2: #1a1a1a; --stripe-3: #f4f4f4;">
-          <span class="color-stripes" aria-hidden="true">
-            <span></span>
-            <span></span>
-            <span></span>
-          </span>
-        </button>
-        <button class="theme-option" type="button" data-theme="theme-vino" aria-label="Vino" aria-pressed="false" style="--stripe-1: #7a2e2e; --stripe-2: #5e2323; --stripe-3: #f4f4f4;">
-          <span class="color-stripes" aria-hidden="true">
-            <span></span>
-            <span></span>
-            <span></span>
-          </span>
-        </button>
+      <p class="footer__address"><span class="footer__address-label">Indirizzo:</span> Piazza D. Fiaschi, 9, 50066 Donnini FI</p>
+      <div class="footer__themes" aria-label="Temi">
+        <div class="theme-selector" aria-label="Selettore temi">
+          <span class="theme-selector__label">Temi</span>
+          <div class="theme-options">
+            <button class="theme-option" type="button" data-theme="theme-original" aria-label="Classico" aria-pressed="false" style="--stripe-1: #d3642a; --stripe-2: #b14f22; --stripe-3: #f4f4f4;">
+              <span class="color-stripes" aria-hidden="true">
+                <span></span>
+                <span></span>
+                <span></span>
+              </span>
+            </button>
+            <button class="theme-option" type="button" data-theme="theme-reserved" aria-label="Neutro" aria-pressed="false" style="--stripe-1: #2f2f2f; --stripe-2: #1a1a1a; --stripe-3: #f4f4f4;">
+              <span class="color-stripes" aria-hidden="true">
+                <span></span>
+                <span></span>
+                <span></span>
+              </span>
+            </button>
+            <button class="theme-option" type="button" data-theme="theme-vino" aria-label="Vino" aria-pressed="false" style="--stripe-1: #7a2e2e; --stripe-2: #5e2323; --stripe-3: #f4f4f4;">
+              <span class="color-stripes" aria-hidden="true">
+                <span></span>
+                <span></span>
+                <span></span>
+              </span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
-  </section>
+    <div class="footer__credit">
+      <a href="https://cristianceni.netlify.app/" class="link-dicceni">Developed by: Cristian Ceni</a></div>
+  </footer>
+
+  <div class="filters__search-panel" data-search-panel>
+    <input type="search" placeholder="Cerca un piatto" aria-label="Cerca un piatto" data-search>
+  </div>
 
   <div class="quickbar" data-quickbar>
     <div class="quickbar__total">
@@ -173,7 +175,11 @@
       <div class="modal__footer">
         <label class="field field--inline">
           <span>Quantita</span>
-          <input type="number" min="1" value="1" data-modal-qty>
+          <div class="qty-stepper">
+            <button class="qty-button" type="button" data-qty-step="-1" aria-label="Diminuisci quantita">-</button>
+            <input type="number" min="1" value="1" data-modal-qty>
+            <button class="qty-button" type="button" data-qty-step="1" aria-label="Aumenta quantita">+</button>
+          </div>
         </label>
         <div class="modal__total">
           <span>Totale</span>

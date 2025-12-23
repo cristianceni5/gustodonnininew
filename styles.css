@@ -188,7 +188,7 @@
   --card: #ffffff;
   --shadow: rgba(0, 0, 0, 0.18);
   --shadow-soft: rgba(0, 0, 0, 0.08);
-  --accent: #2f2f2f;
+  --accent: #535353;
   --accent-dark: #1a1a1a;
   --accent-contrast: #ffffff;
   --accent-soft: #ededed;
@@ -271,6 +271,51 @@ textarea {
   font-weight: inherit;
 }
 
+.qty-stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.qty-stepper input[type="number"] {
+  width: 3.2rem;
+  text-align: center;
+}
+
+.qty-button {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  border: none;
+  background: var(--accent);
+  color: var(--accent-contrast);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.qty-button--sm {
+  width: 24px;
+  height: 24px;
+  font-size: 0.9rem;
+}
+
+.qty-button:hover {
+  background: var(--accent-dark);
+  transform: translateY(-1px);
+}
+
+.qty-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
 img {
   max-width: 100%;
   display: block;
@@ -303,6 +348,11 @@ img {
 .icon--map {
   -webkit-mask-image: url("img/icone e loghi/maps.svg");
   mask-image: url("img/icone e loghi/maps.svg");
+}
+
+.icon--ping {
+  -webkit-mask-image: url("img/icone e loghi/PING.SVG");
+  mask-image: url("img/icone e loghi/PING.SVG");
 }
 
 .icon--menu {
@@ -389,8 +439,10 @@ strong {
 .hero__logo {
   display: flex;
   justify-content: center;
+  align-items: center;
   width: 100%;
   margin-bottom: 0.6rem;
+  min-height: clamp(160px, 18vw, 225px);
 }
 
 .hero__logo img {
@@ -398,15 +450,19 @@ strong {
   width: auto;
 }
 
+.logo-toggle[src*="logoGustoOld"] {
+  height: clamp(160px, 18vw, 225px);
+}
+
 .logo-toggle {
   cursor: pointer;
   display: inline-block;
-  will-change: transform, filter, opacity;
+  will-change: transform, opacity;
   transform-origin: center;
 }
 
 .logo-toggle.is-swapping {
-  animation: logoWeird 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  animation: logoSwap 0.45s ease;
   animation-fill-mode: both;
 }
 
@@ -433,10 +489,8 @@ strong {
 }
 
 .hero__meta-icon {
-  width: 16px;
-  height: 16px;
-  flex-shrink: 0;
-  object-fit: contain;
+  width: 25px;
+  height: 25px;
 }
 
 .hero__actions {
@@ -696,33 +750,50 @@ strong {
   cursor: grabbing;
 }
 
-.filters__search {
-  display: flex;
+.filters__search-toggle {
+  border: 1px solid var(--chip-border);
+  background: var(--chip-bg);
+  color: var(--chip-text);
+  padding: 0.45rem 1rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: var(--weight-medium);
+  cursor: pointer;
+  flex: 0 0 auto;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.filters__search-toggle:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.filters__search-panel {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 5.2rem;
+  display: none;
   align-items: center;
   gap: 0.6rem;
-  flex: 1 1 240px;
-  justify-content: flex-end;
+  padding: 0.6rem 6vw;
+  z-index: 6;
+  justify-content: center;
 }
 
-.filters__search input {
-  width: min(320px, 100%);
+.filters__search-panel.is-open {
+  display: flex;
+}
+
+.filters__search-panel input {
+  width: min(540px, 92vw);
   border: 1px solid var(--input-border);
   background: var(--input-bg);
   padding: 0.5rem 0.9rem;
   border-radius: 999px;
   font-family: var(--font-sans);
   color: var(--input-text);
-}
-
-.filters__search button {
-  border: 1px solid var(--input-border);
-  background: var(--input-bg);
-  padding: 0.5rem 0.9rem;
-  border-radius: 999px;
-  cursor: pointer;
-  font-family: var(--font-sans);
-  color: var(--input-text);
-  font-weight: var(--weight-medium);
+  box-shadow: 0 12px 24px var(--shadow-soft);
 }
 
 .chip {
@@ -931,6 +1002,18 @@ strong {
 
 .menu__media img {
   object-fit: cover;
+}
+
+.menu__section[data-section="bevande"] .menu__media,
+.menu__section[data-section="birre"] .menu__media,
+.menu__section[data-section="alcolici-e-cocktail"] .menu__media {
+  background: #ffffff;
+}
+
+.menu__section[data-section="bevande"] .menu__media img,
+.menu__section[data-section="birre"] .menu__media img,
+.menu__section[data-section="alcolici-e-cocktail"] .menu__media img {
+  object-fit: contain;
 }
 
 .menu__placeholder {
@@ -1185,6 +1268,7 @@ strong {
   gap: 0.6rem;
 }
 
+
 .order__qty {
   display: inline-flex;
   align-items: center;
@@ -1377,8 +1461,9 @@ strong {
   padding: 0.7rem 1.4rem;
   font-weight: var(--weight-semibold);
   position: relative;
-  overflow: visible;
-  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  overflow: hidden;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 8px 18px rgba(198, 40, 40, 0.25);
 }
 
 .order__reset--danger:hover {
@@ -1386,38 +1471,28 @@ strong {
   border-color: #ab1f1f;
   color: #ffffff;
   transform: translateY(-1px);
+  box-shadow: 0 10px 20px rgba(171, 31, 31, 0.28);
 }
 
-.order__reset--danger.is-bursting {
-  animation: resetKick 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
+.order__reset--danger:disabled {
+  cursor: wait;
+  opacity: 0.9;
 }
 
-.order__reset-burst,
-.order__reset-burst--ring {
+.order__reset--danger:active {
+  transform: translateY(0) scale(0.98);
+  box-shadow: 0 6px 12px rgba(171, 31, 31, 0.2);
+}
+
+.order__reset--danger.is-countdown::after {
+  content: "";
   position: absolute;
-  left: 50%;
-  top: 50%;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.22);
+  transform-origin: left;
+  animation: resetCountdown 3s linear forwards;
   pointer-events: none;
-  transform: translate(-50%, -50%);
-  opacity: 0;
 }
-
-.order__reset-burst {
-  width: 16px;
-  height: 16px;
-  border-radius: 999px;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0));
-  animation: resetBurst 1s ease-out;
-}
-
-.order__reset-burst--ring {
-  width: 18px;
-  height: 18px;
-  border-radius: 999px;
-  border: 2px solid rgba(255, 255, 255, 0.8);
-  animation: resetBurstRing 1s ease-out;
-}
-
 
 .order__reset:not(.order__reset--danger):hover {
   border-color: var(--order-reset-hover);
@@ -1490,6 +1565,38 @@ strong {
 .footer__social p {
   color: var(--footer-text);
   font-size: 0.85rem;
+}
+
+.footer__address {
+  margin-top: 0.6rem;
+  color: var(--footer-text);
+  font-size: 0.9rem;
+}
+
+.footer__address-label {
+  color: var(--footer-title);
+  font-weight: var(--weight-medium);
+}
+
+.footer__themes {
+  margin-top: 1rem;
+}
+
+.footer__themes .theme-selector {
+  justify-content: flex-start;
+  padding: 0;
+}
+
+.footer__themes .theme-selector__label {
+  color: var(--footer-text);
+}
+
+.footer__credit {
+  grid-column: 1 / -1;
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.8rem;
+  color: var(--footer-text);
 }
 
 .quickbar {
@@ -1656,6 +1763,7 @@ strong {
   font-weight: 600;
 }
 
+
 .modal__footer {
   margin-top: 1.5rem;
   display: flex;
@@ -1767,17 +1875,20 @@ body.is-locked {
     height: 140px;
   }
 
+  .logo-toggle[src*="logoGustoOld"] {
+    height: 150px;
+  }
+
   .filters {
     padding: 1rem 6vw;
   }
 
-  .filters__search {
-    width: 100%;
-    justify-content: flex-start;
+  .filters__search-panel {
+    bottom: 6.6rem;
   }
 
-  .filters__search input {
-    width: 100%;
+  .filters__search-panel input {
+    width: min(92vw, 520px);
   }
 
   .menu__grid {
@@ -1882,70 +1993,36 @@ body.is-locked {
   }
 }
 
-@keyframes resetBurst {
+@keyframes logoSwap {
   0% {
-    transform: translate(-50%, -50%) scale(0.2);
     opacity: 1;
-  }
-  100% {
-    transform: translate(-50%, -50%) scale(10);
-    opacity: 0;
-  }
-}
-
-@keyframes resetBurstRing {
-  0% {
-    transform: translate(-50%, -50%) scale(0.4);
-    opacity: 0.9;
-  }
-  100% {
-    transform: translate(-50%, -50%) scale(12);
-    opacity: 0;
-  }
-}
-
-@keyframes resetKick {
-  0% {
     transform: scale(1);
-  }
-  20% {
-    transform: scale(1.08) translateY(-2px) rotate(-1.2deg);
   }
   45% {
-    transform: scale(0.97) translateY(1px) rotate(0.9deg);
+    opacity: 0;
+    transform: scale(0.98);
   }
-  65% {
-    transform: scale(1.03) translateY(-1px) rotate(-0.4deg);
+  55% {
+    opacity: 0;
+    transform: scale(0.98);
   }
   100% {
+    opacity: 1;
     transform: scale(1);
   }
 }
 
-@keyframes logoWeird {
-  0% {
-    transform: translateY(0) scale(1);
-    filter: blur(0) saturate(1);
-    opacity: 1;
+@keyframes resetCountdown {
+  from {
+    transform: scaleX(0);
   }
-  35% {
-    transform: translateY(6px) scale(0.97);
-    filter: blur(2.4px) saturate(1.05);
-    opacity: 0.2;
+  to {
+    transform: scaleX(1);
   }
-  48% {
-    transform: translateY(2px) scale(0.96);
-    filter: blur(3px) saturate(1.05);
-    opacity: 0;
-  }
-  58% {
-    transform: translateY(-2px) scale(1.02);
-    filter: blur(0.9px) saturate(1.08);
-    opacity: 0.85;
-  }
-  100% {
-    transform: translateY(0) scale(1);
-    filter: blur(0) saturate(1);
-    opacity: 1;
-  }
+}
+
+.link-dicceni {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: var(--weight-medium);
 }

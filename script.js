@@ -14,6 +14,8 @@ const orderButtons = document.querySelectorAll('[data-whatsapp]');
 const resetButtons = document.querySelectorAll('[data-reset-order]');
 const searchInput = document.querySelector('[data-search]');
 const searchClear = document.querySelector('[data-search-clear]');
+const searchToggle = document.querySelector('[data-search-toggle]');
+const searchPanel = document.querySelector('[data-search-panel]');
 const quickTotalEl = document.querySelector('[data-quick-total]');
 const quickbarEl = document.querySelector('[data-quickbar]');
 const modalEl = document.querySelector('[data-modal]');
@@ -250,6 +252,29 @@ const customizationConfigs = {
       },
     ],
   },
+  bottiglia: {
+    title: 'Varie in bottiglia',
+    subtitle: 'Seleziona una bibita.',
+    fields: [
+      {
+        id: 'bibite',
+        label: 'Bibite',
+        type: 'radio',
+        required: true,
+        pricePerItem: 2.5,
+        options: [
+          { value: 'coca', label: 'Coca' },
+          { value: 'coca-zero', label: 'Coca Zero' },
+          { value: 'fanta', label: 'Fanta' },
+          { value: 'sprite', label: 'Sprite' },
+          { value: 'lemon', label: 'Lemon' },
+          { value: 'tonica', label: 'Tonica' },
+          { value: 'chinotto', label: 'Chinotto' },
+          { value: 'cedrata', label: 'Cedrata' },
+        ],
+      },
+    ],
+  },
   birra: {
     title: 'Birra',
     subtitle: 'Formato rapido con prezzi generici.',
@@ -294,6 +319,7 @@ const customItemMap = new Map([
   ['Personalizzato', 'calzone'],
   ['Gin Tonic', 'gin'],
   ['Vino (bottiglia, calice)', 'vino'],
+  ['Varie in bottiglia', 'bottiglia'],
 ]);
 
 const formatPrice = (price) => {
@@ -364,25 +390,40 @@ const resetOrder = (delayMs = 0) => {
   }
 };
 
-const triggerResetBurst = (button) => {
-  if (!button) {
+const startResetCountdown = (button, seconds = 3) => {
+  if (!button || button.dataset.countdown === 'true') {
     return;
   }
-  const burst = document.createElement('span');
-  burst.className = 'order__reset-burst';
-  const ring = document.createElement('span');
-  ring.className = 'order__reset-burst--ring';
-  button.appendChild(burst);
-  button.appendChild(ring);
-  burst.addEventListener('animationend', () => burst.remove(), { once: true });
-  ring.addEventListener('animationend', () => ring.remove(), { once: true });
+  const label = button.dataset.resetLabel || button.textContent.trim();
+  button.dataset.resetLabel = label;
+  let remaining = Number.isFinite(seconds) ? Math.max(1, Math.round(seconds)) : 3;
+  button.dataset.countdown = 'true';
+  button.classList.add('is-countdown');
+  if ('disabled' in button) {
+    button.disabled = true;
+  }
 
-  button.classList.remove('is-bursting');
-  void button.offsetWidth;
-  button.classList.add('is-bursting');
-  button.addEventListener('animationend', () => {
-    button.classList.remove('is-bursting');
-  }, { once: true });
+  const updateLabel = () => {
+    button.textContent = `${label} tra ${remaining}`;
+  };
+
+  updateLabel();
+
+  const timer = setInterval(() => {
+    remaining -= 1;
+    if (remaining <= 0) {
+      clearInterval(timer);
+      button.textContent = label;
+      if ('disabled' in button) {
+        button.disabled = false;
+      }
+      button.classList.remove('is-countdown');
+      delete button.dataset.countdown;
+      resetOrder(0);
+      return;
+    }
+    updateLabel();
+  }, 1000);
 };
 
 const preloadLogoSource = (src) => {
@@ -479,27 +520,22 @@ const groupCartItems = (entries) => {
   return { grouped, orderedCategories };
 };
 
-const iconClasses = {
-  invia: 'icon--invia',
-  glutine: 'icon--glutine',
-  remove: 'icon--remove',
-  menu: 'icon--menu',
-  ordini: 'icon--ordini',
-  privato: 'icon--privato',
-  ordineinviato: 'icon--ordineinviato',
-  map: 'icon--map',
+const iconSources = {
+  remove: 'img/icone e loghi/delete.svg',
 };
 
 const createIcon = (name, className = 'icon icon--sm') => {
-  const iconClass = iconClasses[name];
-  if (!iconClass) {
+  const src = iconSources[name];
+  if (!src) {
     return null;
   }
-  const icon = document.createElement('span');
-  const classes = `${className} ${iconClass}`.trim();
-  if (classes) {
-    icon.className = classes;
+  const icon = document.createElement('img');
+  icon.src = src;
+  if (className) {
+    icon.className = className;
   }
+  icon.alt = '';
+  icon.decoding = 'async';
   icon.setAttribute('aria-hidden', 'true');
   return icon;
 };
@@ -533,7 +569,11 @@ const buildFilters = (groups) => {
   if (!filtersEl) {
     return;
   }
+  const searchToggleInline = filtersEl.querySelector('[data-search-toggle]');
   filtersEl.innerHTML = '';
+  if (searchToggleInline) {
+    filtersEl.appendChild(searchToggleInline);
+  }
   groups.forEach((group) => {
     filtersEl.appendChild(createChip(group.categoria, group.slug, false));
   });
@@ -1292,6 +1332,47 @@ const buildCheckboxField = (field) => {
   return group;
 };
 
+const buildRadioField = (field) => {
+  const group = document.createElement('div');
+  group.className = 'modal__group';
+
+  const label = document.createElement('div');
+  label.className = 'modal__label';
+  label.textContent = field.label;
+
+  const optionsWrap = document.createElement('div');
+  optionsWrap.className = 'modal__options';
+
+  field.options.forEach((option) => {
+    const optionLabel = document.createElement('label');
+    optionLabel.className = 'modal__option';
+
+    const input = document.createElement('input');
+    input.type = 'radio';
+    input.name = `modal-${field.id}`;
+    input.dataset.modalRadio = field.id;
+    input.dataset.label = option.label;
+    input.value = option.value;
+    if (Number.isFinite(option.price)) {
+      input.dataset.price = String(option.price);
+    }
+    if (field.defaultValue !== undefined && option.value === field.defaultValue) {
+      input.checked = true;
+    }
+
+    const text = document.createElement('span');
+    text.textContent = option.label;
+
+    optionLabel.appendChild(input);
+    optionLabel.appendChild(text);
+    optionsWrap.appendChild(optionLabel);
+  });
+
+  group.appendChild(label);
+  group.appendChild(optionsWrap);
+  return group;
+};
+
 const buildTextField = (field) => {
   const wrapper = document.createElement('label');
   wrapper.className = 'field';
@@ -1349,9 +1430,32 @@ const buildModalState = () => {
           items.push(input.dataset.label || input.value);
         }
       });
+      if (field.required && !items.length) {
+        isValid = false;
+      }
       const extras = items.length * (field.pricePerItem || 0);
       baseTotal += extras;
       values[field.id] = { items, total: extras };
+    }
+
+    if (field.type === 'radio') {
+      const input = modalBodyEl.querySelector(`input[data-modal-radio="${field.id}"]:checked`);
+      const value = input ? input.value : '';
+      const label = input ? input.dataset.label || input.value : '';
+      const price = Number(input && input.dataset.price);
+      if (field.required && !value) {
+        isValid = false;
+      }
+      if (Number.isFinite(price)) {
+        baseTotal += price;
+      } else if (value) {
+        baseTotal += field.pricePerItem || 0;
+      }
+      values[field.id] = {
+        value,
+        label,
+        price: Number.isFinite(price) ? price : value ? field.pricePerItem || 0 : 0,
+      };
     }
 
     if (field.type === 'text') {
@@ -1384,6 +1488,48 @@ const updateModalTotal = () => {
 
   modalTotalEl.textContent = formatPrice(state.total) || '€ 0,00';
   modalAddButton.disabled = !state.isValid;
+};
+
+const setSearchPanelOpen = (isOpen) => {
+  if (!searchPanel || !searchToggle) {
+    return;
+  }
+  searchPanel.classList.toggle('is-open', isOpen);
+  searchToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  if (isOpen && searchInput) {
+    searchInput.focus();
+  }
+};
+
+const adjustQtyInput = (button) => {
+  const rawStep = button.dataset.qtyStep;
+  let step = Number(rawStep);
+  if (!Number.isFinite(step)) {
+    if (rawStep === 'up') {
+      step = 1;
+    } else if (rawStep === 'down') {
+      step = -1;
+    } else {
+      const text = (button.textContent || '').trim();
+      step = text.includes('-') ? -1 : 1;
+    }
+  }
+  const wrapper = button.closest('.qty-stepper');
+  const input = wrapper ? wrapper.querySelector('input[type="number"]') : null;
+  if (!input) {
+    return;
+  }
+  const min = Math.max(1, Number(input.min) || 1);
+  const max = Number(input.max);
+  const stepSize = Number(input.step) || 1;
+  const current = Number(input.value) || min;
+  let next = current + step * stepSize;
+  next = Math.max(min, next);
+  if (Number.isFinite(max)) {
+    next = Math.min(max, next);
+  }
+  input.value = String(next);
+  input.dispatchEvent(new Event('input', { bubbles: true }));
 };
 
 const buildModalItem = (type, state) => {
@@ -1442,6 +1588,14 @@ const buildModalItem = (type, state) => {
     }
   }
 
+  if (type === 'bottiglia') {
+    nome = 'Varie in bottiglia';
+    const scelta = values.bibite ? values.bibite.label : '';
+    if (scelta) {
+      notes.push(`Scelta: ${scelta}`);
+    }
+  }
+
   if (values.note && values.note.value) {
     notes.push(`Note: ${values.note.value}`);
   }
@@ -1474,6 +1628,9 @@ const openModal = (type) => {
     }
     if (field.type === 'checkbox') {
       modalBodyEl.appendChild(buildCheckboxField(field));
+    }
+    if (field.type === 'radio') {
+      modalBodyEl.appendChild(buildRadioField(field));
     }
     if (field.type === 'text') {
       modalBodyEl.appendChild(buildTextField(field));
@@ -1567,6 +1724,9 @@ const init = () => {
       searchQuery = event.target.value;
       applyFilters();
     });
+    searchInput.addEventListener('focus', () => {
+      setSearchPanelOpen(true);
+    });
   }
 
   if (searchClear && searchInput) {
@@ -1577,6 +1737,18 @@ const init = () => {
       searchInput.focus();
     });
   }
+  if (searchToggle) {
+    searchToggle.addEventListener('click', () => {
+      if (!searchPanel) {
+        return;
+      }
+      const nextState = !searchPanel.classList.contains('is-open');
+      setSearchPanelOpen(nextState);
+    });
+  }
+  if (searchInput && searchInput.value.trim()) {
+    setSearchPanelOpen(true);
+  }
 
   orderButtons.forEach((button) => {
     button.addEventListener('click', () => handleWhatsApp(button));
@@ -1584,8 +1756,7 @@ const init = () => {
 
   resetButtons.forEach((button) => {
     button.addEventListener('click', () => {
-      triggerResetBurst(button);
-      resetOrder(1000);
+      startResetCountdown(button, 3);
     });
   });
 
@@ -1601,6 +1772,15 @@ const init = () => {
   if (modalAddButton) {
     modalAddButton.addEventListener('click', handleModalAdd);
   }
+
+  document.addEventListener('click', (event) => {
+    const button = event.target.closest('[data-qty-step]');
+    if (!button) {
+      return;
+    }
+    event.preventDefault();
+    adjustQtyInput(button);
+  });
 
   modalCloseButtons.forEach((button) => {
     button.addEventListener('click', closeModal);

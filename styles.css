@@ -751,6 +751,13 @@ strong {
   transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
+.filters__search-toggle.is-active,
+.filters__search-toggle[aria-expanded="true"] {
+  background: var(--chip-active-bg);
+  color: var(--chip-active-text);
+  border-color: var(--chip-active-border);
+}
+
 .filters__search-toggle:hover {
   border-color: var(--accent);
   color: var(--accent);
@@ -772,27 +779,39 @@ strong {
   left: 0;
   right: 0;
   bottom: calc(5.2rem + env(safe-area-inset-bottom, 0px));
-  display: none;
+  display: flex;
   align-items: center;
   gap: 0.6rem;
-  padding: 0.6rem 6vw;
+  padding: 0.85rem 6vw;
   z-index: 6;
   justify-content: center;
+  min-height: 3.6rem;
+  background: var(--filters-bg);
+  border-top: 1px solid var(--filters-border);
+  box-shadow: 0 14px 28px var(--shadow-soft);
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
 .filters__search-panel.is-open {
-  display: flex;
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
 }
 
 .filters__search-panel input {
   width: min(540px, 92vw);
   border: 1px solid var(--input-border);
   background: var(--input-bg);
-  padding: 0.5rem 0.9rem;
+  padding: 0.7rem 1.2rem;
   border-radius: 999px;
   font-family: var(--font-sans);
   color: var(--input-text);
-  box-shadow: 0 12px 24px var(--shadow-soft);
+  min-height: 44px;
+  box-shadow: 0 10px 22px var(--shadow-soft);
+  font-size: 0.95rem;
 }
 
 .chip {
@@ -1025,10 +1044,10 @@ strong {
 }
 
 .menu__content {
-  padding: 0.9rem 1rem 5.8rem;
+  padding: 0.9rem 1rem;
   display: flex;
   flex-direction: column;
-  gap: 0.45rem;
+  gap: 0.35rem;
   min-height: 0;
   position: relative;
 }
@@ -1051,6 +1070,14 @@ strong {
   overflow: hidden;
 }
 
+.menu__toggles {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  align-items: flex-start;
+  margin-top: auto;
+}
+
 .menu__gluten,
 .menu__lactose {
   display: flex;
@@ -1058,15 +1085,11 @@ strong {
   justify-content: flex-start;
   align-self: flex-start;
   cursor: pointer;
-  margin-top: 0;
-  position: absolute;
-  left: 1rem;
-  right: 1rem;
-  bottom: 2.9rem;
+  margin: 0;
 }
 
 .menu__lactose.menu__lactose--stacked {
-  bottom: 4.35rem;
+  margin-top: 0;
 }
 
 .menu__gluten-input,
@@ -1127,10 +1150,7 @@ strong {
   align-items: flex-end;
   justify-content: space-between;
   gap: 1rem;
-  position: absolute;
-  left: 1rem;
-  right: 1rem;
-  bottom: 0.8rem;
+  margin-top: auto;
 }
 
 .menu__qty {
@@ -1215,6 +1235,7 @@ strong {
 }
 
 .order {
+  margin-top: 4rem;
   padding: 0 6vw 4rem;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
@@ -1293,6 +1314,9 @@ strong {
 
 .order__label {
   min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .order__item-meta {
@@ -1969,6 +1993,13 @@ body.is-locked {
     --menu-card-width: 212px;
     --menu-card-height: 330px;
     --menu-card-media-height: 155px;
+  }
+
+  .menu__gluten span,
+  .menu__lactose span {
+    font-size: 0.78rem;
+    padding: 0.3rem 0.65rem;
+    gap: 0.35rem;
   }
 }
 

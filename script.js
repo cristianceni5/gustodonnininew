@@ -65,6 +65,7 @@ const itemButtons = new Map();
 const slugCounts = new Map();
 const cardQtyEls = new Map();
 const customTypeBaseKey = new Map();
+const orderEl = document.querySelector('#ordine');
 const themeButtons = document.querySelectorAll('.theme-option');
 const themeStorageKey = 'gusto-theme';
 const themeClasses = Array.from(themeButtons)
@@ -74,6 +75,7 @@ const themeClasses = Array.from(themeButtons)
 let activeFilter = 'all';
 let searchQuery = '';
 let activeModalType = null;
+let searchPanelBottomOffset = 0;
 
 const applyTheme = (theme) => {
   const targets = [document.documentElement, document.body].filter(Boolean);
@@ -415,23 +417,14 @@ const closeInfoPanels = () => {
 };
 
 const resetOrder = (delayMs = 0) => {
-  cart.clear();
-  updateCartUI();
-  document.querySelectorAll('[data-field]').forEach((field) => {
-    if ('value' in field) {
-      field.value = '';
-    }
-  });
-  const menuTarget = document.querySelector('#menu');
-  if (menuTarget) {
-    if (delayMs > 0) {
-      setTimeout(() => {
-        menuTarget.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, delayMs);
-    } else {
-      menuTarget.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+  const doReload = () => {
+    window.location.reload();
+  };
+  if (delayMs > 0) {
+    setTimeout(doReload, delayMs);
+    return;
   }
+  doReload();
 };
 
 const startResetCountdown = (button, seconds = 3) => {
@@ -812,22 +805,13 @@ const createMenuItem = (item, category) => {
     card.appendChild(infoPanel);
   }
 
-  if (hasAllergens) {
-    const allergenWrap = document.createElement('div');
-    allergenWrap.className = 'menu__allergens';
-    allergens.forEach((allergen) => {
-      const badge = document.createElement('span');
-      badge.className = 'menu__allergen';
-      badge.textContent = allergenLabels[allergen] || allergen;
-      allergenWrap.appendChild(badge);
-    });
-    content.appendChild(allergenWrap);
-  }
-
   const customType = customItemMap.get(item.nome);
   const isCustom = Boolean(customType);
   const basePrice = Number(item.prezzo);
   const hasBasePrice = Number.isFinite(basePrice);
+  const togglesWrap = document.createElement('div');
+  togglesWrap.className = 'menu__toggles';
+  let hasToggles = false;
 
   let glutenInput = null;
   let lactoseInput = null;
@@ -848,7 +832,8 @@ const createMenuItem = (item, category) => {
 
       glutenWrap.appendChild(glutenInput);
       glutenWrap.appendChild(glutenText);
-      content.appendChild(glutenWrap);
+      togglesWrap.appendChild(glutenWrap);
+      hasToggles = true;
     }
   }
 
@@ -870,8 +855,13 @@ const createMenuItem = (item, category) => {
 
       lactoseWrap.appendChild(lactoseInput);
       lactoseWrap.appendChild(lactoseText);
-      content.appendChild(lactoseWrap);
+      togglesWrap.appendChild(lactoseWrap);
+      hasToggles = true;
     }
+  }
+
+  if (hasToggles) {
+    content.appendChild(togglesWrap);
   }
 
   const meta = document.createElement('div');
@@ -1250,11 +1240,7 @@ const buildMessage = (scope) => {
     return null;
   }
 
-  const lines = ['Ordine Gusto Donnini'];
-
-  if (scope === 'staff') {
-    lines.push('Area personale');
-  }
+  const lines = [];
 
   const customerName = document.querySelector('[data-field="customer-name"]');
   const customerTable = document.querySelector('[data-field="customer-table"]');
@@ -1265,40 +1251,51 @@ const buildMessage = (scope) => {
   const staffNote = document.querySelector('[data-field="staff-note"]');
 
   if (scope === 'customer' && customerName && customerName.value.trim()) {
-    lines.push(`Nome: ${customerName.value.trim()}`);
+    lines.push(`*Nome:* ${customerName.value.trim()}`);
   }
 
   if (scope === 'customer' && customerTable && customerTable.value.trim()) {
-    lines.push(`Tavolo: ${customerTable.value.trim()}`);
+    lines.push(`*Tavolo:* ${customerTable.value.trim()}`);
   }
 
   if (scope === 'staff' && staffTable && staffTable.value.trim()) {
-    lines.push(`Tavolo: ${staffTable.value.trim()}`);
+    lines.push(`*Tavolo:* ${staffTable.value.trim()}`);
   }
 
   if (scope === 'staff' && staffCovers && staffCovers.value.trim()) {
-    lines.push(`Coperti: ${staffCovers.value.trim()}`);
+    lines.push(`*Coperti:* ${staffCovers.value.trim()}`);
   }
 
   if (scope === 'staff' && staffSurname && staffSurname.value.trim()) {
-    lines.push(`Cognome: ${staffSurname.value.trim()}`);
+    lines.push(`*Cognome:* ${staffSurname.value.trim()}`);
   }
 
-  lines.push('Articoli:');
-
   const { grouped, orderedCategories } = groupCartItems(items);
-  orderedCategories.forEach((category) => {
-    lines.push(`${category}:`);
+  if (lines.length) {
+    lines.push('');
+  }
+
+  orderedCategories.forEach((category, index) => {
+    let categoryTotal = 0;
+    lines.push(`*${category}*`);
     grouped.get(category).forEach((entry) => {
+      const price = Number(entry.item.prezzo);
+      const lineTotal = Number.isFinite(price) ? price * entry.qty : 0;
+      categoryTotal += lineTotal;
       lines.push(`- ${entry.qty}x ${formatItemLabel(entry.item)}`);
     });
+    lines.push(`Totale ${category}: ${formatPrice(categoryTotal)}`);
+    if (index < orderedCategories.length - 1) {
+      lines.push('');
+    }
   });
 
-  lines.push(`Totale: ${formatPrice(total)}`);
+  lines.push(`*Totale ordine:* ${formatPrice(total)}`);
 
   const note = scope === 'staff' ? staffNote : customerNote;
   if (note && note.value.trim()) {
-    lines.push(`Note: ${note.value.trim()}`);
+    lines.push('');
+    lines.push(`*Note:* ${note.value.trim()}`);
   }
 
   return lines.join('\n');
@@ -1568,6 +1565,81 @@ const updateModalTotal = () => {
   modalAddButton.disabled = !state.isValid;
 };
 
+const resetSearchPanelClamp = () => {
+  if (!searchPanel) {
+    return;
+  }
+  searchPanel.classList.remove('is-clamped');
+  searchPanel.style.position = '';
+  searchPanel.style.top = '';
+  searchPanel.style.bottom = '';
+};
+
+const updateSearchPanelMetrics = () => {
+  if (!searchPanel) {
+    return;
+  }
+  if (searchPanel.classList.contains('is-clamped')) {
+    return;
+  }
+  const computedBottom = parseFloat(getComputedStyle(searchPanel).bottom);
+  if (Number.isFinite(computedBottom)) {
+    searchPanelBottomOffset = Math.max(0, computedBottom);
+    return;
+  }
+  const rect = searchPanel.getBoundingClientRect();
+  if (rect.height) {
+    searchPanelBottomOffset = Math.max(0, window.innerHeight - rect.bottom);
+  }
+};
+
+const clampSearchPanel = () => {
+  if (!searchPanel || !orderEl) {
+    return;
+  }
+  if (!searchPanel.classList.contains('is-open')) {
+    if (!searchPanel.classList.contains('is-closing')) {
+      resetSearchPanelClamp();
+    }
+    return;
+  }
+
+  updateSearchPanelMetrics();
+
+  const panelHeight = searchPanel.offsetHeight || 0;
+  const orderRect = orderEl.getBoundingClientRect();
+  const orderStart = window.scrollY + orderRect.top;
+  const gapPad = 12;
+  const maxTop = orderStart - panelHeight - gapPad;
+  const fixedTop = window.scrollY + window.innerHeight - searchPanelBottomOffset - panelHeight;
+
+  if (fixedTop < maxTop) {
+    resetSearchPanelClamp();
+    return;
+  }
+
+  const top = Math.max(0, maxTop);
+
+  searchPanel.style.position = 'absolute';
+  searchPanel.style.top = `${top}px`;
+  searchPanel.style.bottom = 'auto';
+  searchPanel.classList.add('is-clamped');
+};
+
+const handleSearchPanelTransition = (event) => {
+  if (!searchPanel || event.propertyName !== 'opacity') {
+    return;
+  }
+  if (searchPanel.classList.contains('is-open')) {
+    return;
+  }
+  if (!searchPanel.classList.contains('is-closing')) {
+    return;
+  }
+  searchPanel.classList.remove('is-closing');
+  resetSearchPanelClamp();
+};
+
 const setSearchPanelOpen = (isOpen) => {
   if (!searchPanel || !searchToggle) {
     return;
@@ -1582,13 +1654,20 @@ const setSearchPanelOpen = (isOpen) => {
     searchInput.focus();
   }
   if (!isOpen) {
+    searchPanel.classList.add('is-closing');
     if (searchInput) {
       searchInput.value = '';
       searchInput.blur();
     }
     searchQuery = '';
     applyFilters();
+    return;
   }
+  searchPanel.classList.remove('is-closing');
+  requestAnimationFrame(() => {
+    updateSearchPanelMetrics();
+    clampSearchPanel();
+  });
 };
 
 const adjustQtyInput = (button) => {
@@ -1844,6 +1923,16 @@ const init = () => {
   }
   if (searchInput && searchInput.value.trim()) {
     setSearchPanelOpen(true);
+  }
+
+  if (searchPanel) {
+    searchPanel.addEventListener('transitionend', handleSearchPanelTransition);
+    window.addEventListener('scroll', clampSearchPanel, { passive: true });
+    window.addEventListener('resize', () => {
+      resetSearchPanelClamp();
+      updateSearchPanelMetrics();
+      clampSearchPanel();
+    });
   }
 
   orderButtons.forEach((button) => {

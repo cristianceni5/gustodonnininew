@@ -20,8 +20,8 @@ const menu = [ //Menù completo 11/08/2025
     {
         categoria: "Bevande",
         prodotti: [
-            { nome: "Acqua 1/2 litro naturale", prezzo: 1, immagine: "img/bevande/acquanat.png", allergeni: [] },
-            { nome: "Acqua 1/2 litro frizzante", prezzo: 1, immagine: "img/bevande/acquafrizz.png", allergeni: [] },
+            { nome: "Acqua naturale", prezzo: 1, descrizione:"1 litro o 1/2 litro", immagine: "img/bevande/acquanat.png", allergeni: [] },
+            { nome: "Acqua frizzante", prezzo: 1, descrizione:"1 litro o 1/2 litro", immagine: "img/bevande/acquafrizz.png", allergeni: [] },
             { nome: "Succo di frutta", prezzo: 2, descrizione:"specifica il gusto nelle note", immagine: "img/bevande/succhino.png", allergeni: [] },
             { nome: "Sanbitter (liscio)", prezzo: 2.50, immagine: "img/bevande/bitter.png", allergeni: [] },
             { nome: "Crodino (liscio)", prezzo: 2.50, immagine: "img/bevande/crodinoo.png", allergeni: [] },

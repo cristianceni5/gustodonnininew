@@ -385,6 +385,40 @@ const customizationConfigs = {
       },
     ],
   },
+  'acqua-naturale': {
+    title: 'Acqua naturale',
+    subtitle: 'Scegli formato.',
+    fields: [
+      {
+        id: 'formato',
+        label: 'Formato',
+        type: 'radio',
+        required: true,
+        defaultValue: 'mezzo',
+        options: [
+          { value: 'mezzo', label: '1/2 litro', price: 1 },
+          { value: 'litro', label: '1 litro', price: 2 },
+        ],
+      },
+    ],
+  },
+  'acqua-frizzante': {
+    title: 'Acqua frizzante',
+    subtitle: 'Scegli formato.',
+    fields: [
+      {
+        id: 'formato',
+        label: 'Formato',
+        type: 'radio',
+        required: true,
+        defaultValue: 'mezzo',
+        options: [
+          { value: 'mezzo', label: '1/2 litro', price: 1 },
+          { value: 'litro', label: '1 litro', price: 2 },
+        ],
+      },
+    ],
+  },
 };
 
 const customItemMap = new Map([
@@ -393,6 +427,8 @@ const customItemMap = new Map([
   ['Gin Tonic', 'gin'],
   ['Vino (bottiglia, calice)', 'vino'],
   ['Varie in bottiglia', 'bottiglia'],
+  ['Acqua naturale', 'acqua-naturale'],
+  ['Acqua frizzante', 'acqua-frizzante'],
 ]);
 
 const formatPrice = (price) => {
@@ -1921,6 +1957,14 @@ const buildModalItem = (type, state) => {
     const scelta = values.bibite ? values.bibite.label : '';
     if (scelta) {
       notes.push(`Scelta: ${scelta}`);
+    }
+  }
+
+  if (type === 'acqua-naturale' || type === 'acqua-frizzante') {
+    const formato = values.formato ? values.formato.label : '';
+    nome = type === 'acqua-naturale' ? 'Acqua naturale' : 'Acqua frizzante';
+    if (formato) {
+      nome = `${nome} ${formato}`;
     }
   }
 

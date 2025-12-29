@@ -37,8 +37,10 @@ const menu = [ //Menù completo 11/08/2025
     {
         categoria: "Birre",
         prodotti: [
-            { nome: "Birra alla spina (piccola)", prezzo: 2.5, immagine: "img/birre/birrapiccina.png", allergeni: [] },
-            { nome: "Birra alla spina (media)", prezzo: 3.5, immagine: "img/birre/birramedia.png", allergeni: [] },
+            { nome: "Birra alla spina bionda (piccola)", prezzo: 2.5, immagine: "img/birre/birrapiccina.png", allergeni: [] },
+            { nome: "Birra alla spina rossa (piccola)", prezzo: 2.5, immagine: "img/birre/birrarossapiccina.png", allergeni: [] },
+            { nome: "Birra alla spina bionda (media)", prezzo: 3.5, immagine: "img/birre/birramedia.png", allergeni: [] },
+            { nome: "Birra alla spina rossa (media)", prezzo: 3.5, immagine: "img/birre/birrarossamedia.png", allergeni: [] },
             { nome: "Birra Corona", prezzo: 2.5, immagine: "img/birre/corona.png", allergeni: [] },
             { nome: "Birra Moretti", prezzo: 2.5, immagine: "img/birre/moretti.png", allergeni: [] },
             { nome: "Birra Icnusa non filtata", prezzo: 3.5, immagine: "img/birre/ichnusa.png", allergeni: [] },

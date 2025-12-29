@@ -711,7 +711,7 @@ strong {
 .filters {
   position: sticky;
   top: 0;
-  z-index: 2;
+  z-index: 7;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -804,7 +804,7 @@ strong {
   z-index: 6;
   justify-content: center;
   min-height: 3.6rem;
-  background: var(--filters-bg);
+  background: transparent;
   border-top: 1px solid var(--filters-border);
   box-shadow: 0 14px 28px var(--shadow-soft);
   opacity: 0;
@@ -1317,6 +1317,7 @@ strong {
 
 .order__detail {
   font-size: 0.95rem;
+  flex: 1;
   min-width: 0;
   display: flex;
   align-items: flex-start;

@@ -164,9 +164,11 @@ const ingredientOptions = [
   { value: 'carciofi', label: 'Carciofi' },
   { value: 'olive', label: 'Olive' },
   { value: 'cipolla', label: 'Cipolla' },
+  { value: 'capperi', label: 'Capperi' },
   { value: 'porri', label: 'Porri' },
   { value: 'brie', label: 'Brie' },
   { value: 'zucchine', label: 'Zucchine' },
+  { value: 'peperoncino', label: 'Peperoncino' },
   { value: 'melanzane', label: 'Melanzane' },
   { value: 'gorgonzola', label: 'Gorgonzola' },
   { value: 'grana', label: 'Grana' },
@@ -1204,21 +1206,27 @@ const createMenuItem = (item, category) => {
       return;
     }
     if (isPizzaCategory) {
+      const isSpecialPizzaCategory = categoryName.includes('special');
       if (isCustom) {
         openModal(customType);
         return;
       }
-      if (!hasBasePrice) {
+      // If this is a "Pizze speciali" category, do not open the modal;
+      // fall through to the generic add-to-cart flow (single click adds item).
+      if (!isSpecialPizzaCategory) {
+        if (!hasBasePrice) {
+          return;
+        }
+        openModal('pizza-item', {
+          baseKey: key,
+          category: category.categoria,
+          itemName: item.nome,
+          basePrice,
+          allergens: [...allergens],
+        });
         return;
       }
-      openModal('pizza-item', {
-        baseKey: key,
-        category: category.categoria,
-        itemName: item.nome,
-        basePrice,
-        allergens: [...allergens],
-      });
-      return;
+      // otherwise (special pizza) continue to generic add-to-cart
     }
     if (isCustom) {
       openModal(customType);
@@ -1582,7 +1590,51 @@ const buildMessage = (scope) => {
       const price = Number(entry.item.prezzo);
       const lineTotal = Number.isFinite(price) ? price * entry.qty : 0;
       categoryTotal += lineTotal;
-      lines.push(`- ${entry.qty}x ${formatItemLabel(entry.item)}`);
+
+      const isPizzaCategory = String(category || '').toLowerCase().includes('pizz');
+      let label = formatItemLabel(entry.item);
+
+      if (isPizzaCategory) {
+        const baseName = entry.item && entry.item.nome ? entry.item.nome : 'Pizza';
+        const rawNote = entry.item && entry.item.customNote ? String(entry.item.customNote).trim() : '';
+        if (!rawNote) {
+          label = baseName;
+        } else {
+          const parts = rawNote.split('|').map((p) => String(p || '').trim()).filter(Boolean);
+          let basePart = null;
+          const otherParts = [];
+          parts.forEach((p) => {
+            const mBase = p.match(/^(?:base:|impasto:)\s*(.+)$/i);
+            if (mBase) {
+              basePart = mBase[1].trim();
+              return;
+            }
+            const mCon = p.match(/^(?:con:|ingredienti:)\s*(.+)$/i);
+            if (mCon) {
+              otherParts.push(`con ${mCon[1].trim()}`);
+              return;
+            }
+            otherParts.push(p);
+          });
+
+          if (basePart) {
+            label = `${baseName} base ${basePart}`;
+            if (otherParts.length) {
+              // if first other part starts with 'con ', append directly
+              if (otherParts[0].toLowerCase().startsWith('con ')) {
+                label = `${label} ${otherParts.join(' | ')}`;
+              } else {
+                label = `${label} - ${otherParts.join(' | ')}`;
+              }
+            }
+          } else {
+            // fallback to the generic formatter
+            label = formatItemLabel(entry.item);
+          }
+        }
+      }
+
+      lines.push(`- ${entry.qty}x ${label}`);
     });
     lines.push(`Totale ${category}: ${formatPrice(categoryTotal)}`);
     if (index < orderedCategories.length - 1) {
